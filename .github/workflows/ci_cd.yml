@@ -21,4 +21,18 @@ jobs:
           path: target
           key: ${{ hashFiles('Cargo.lock') }}-dev
 
-      - nam
+      - name: npm cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ hashFiles('pnpm-lock.yaml') }}
+      - name: make check
+        run: make check
+
+  push_container:
+    name: build and push Docker container
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    environment: Kubernetes
+    steps:
+      - uses: act
