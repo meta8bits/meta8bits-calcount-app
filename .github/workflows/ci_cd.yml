@@ -1,0 +1,24 @@
+name: CI/CD
+
+on:
+  push:
+    branch: ['main']
+  pull_request:
+
+jobs:
+
+  check:
+    name: continuous integration checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: cargo cache
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ hashFiles('Cargo.lock') }}-dev
+
+      - nam
