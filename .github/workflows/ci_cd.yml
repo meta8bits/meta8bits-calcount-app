@@ -62,4 +62,19 @@ jobs:
   deploy:
     name: deploy to Kubernetes with Terraform
     if: ${{ github.ref == 'refs/heads/main' }}
-    runs-on: ub
+    runs-on: ubuntu-latest
+    needs: [check, push_container]
+    environment: Kubernetes
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: terraform cache
+        uses: actions/cache@v3
+        with:
+          path: .terraform
+          key: ${{ hashFiles('.terraform.lock.hcl') }}-prod
+
+      - name: setup kubectl
+        run: |
+          mkdir ~/.kube
+          echo "${{ secre
