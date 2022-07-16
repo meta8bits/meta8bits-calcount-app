@@ -77,4 +77,13 @@ jobs:
       - name: setup kubectl
         run: |
           mkdir ~/.kube
-          echo "${{ secre
+          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+
+      - name: perform deployment
+        env:
+          # credentials are used for terraform state bucket
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          TF_VAR_stripe_api_key: ${{ secrets.STRIPE_API_KEY }}
+          TF_VAR
