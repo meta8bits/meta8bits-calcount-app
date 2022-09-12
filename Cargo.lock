@@ -454,4 +454,33 @@ dependencies = [
  "async-trait",
  "axum",
  "axum-macros",
- 
+ "base64 0.21.5",
+ "chrono",
+ "chrono-tz",
+ "dotenvy",
+ "futures",
+ "futures-util",
+ "hex",
+ "hmac",
+ "hyper",
+ "lettre",
+ "markdown",
+ "rand",
+ "regex",
+ "reqwest",
+ "rustls 0.21.10",
+ "serde",
+ "serde_json",
+ "sha2",
+ "sqlx",
+ "tokio",
+ "tower",
+ "tower-http",
+ "uuid",
+]
+
+[[package]]
+name = "cc"
+version = "1.0.83"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f1174fb0b6ec23863f8b97102
