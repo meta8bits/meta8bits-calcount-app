@@ -1309,4 +1309,25 @@ dependencies = [
  "httpdate",
  "idna",
  "mime",
- "
+ "nom",
+ "once_cell",
+ "quoted_printable",
+ "rustls 0.21.10",
+ "rustls-pemfile",
+ "socket2 0.5.5",
+ "tokio",
+ "tokio-rustls",
+ "url",
+ "webpki-roots 0.25.3",
+]
+
+[[package]]
+name = "libc"
+version = "0.2.151"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "302d7ab3130588088d277783b1e2d2e10c9e9e4a16dd9050e6ec93fb3e7048f4"
+
+[[package]]
+name = "libredox"
+version = "0.0.1"
+source = "registr
