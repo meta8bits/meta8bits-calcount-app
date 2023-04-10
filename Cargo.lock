@@ -2238,4 +2238,27 @@ dependencies = [
  "once_cell",
  "paste",
  "percent-encoding",
- 
+ "rand",
+ "rustls 0.20.9",
+ "rustls-pemfile",
+ "serde",
+ "serde_json",
+ "sha1",
+ "sha2",
+ "smallvec",
+ "sqlformat",
+ "sqlx-rt",
+ "stringprep",
+ "thiserror",
+ "url",
+ "uuid",
+ "webpki-roots 0.22.6",
+ "whoami",
+]
+
+[[package]]
+name = "sqlx-macros"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9966e64ae989e7e575b19d7265cb79d7fc3cbbdf179835cb0d716f294c2049c9"
+dependenc
