@@ -22,4 +22,22 @@ started;
 make bootstrap
 ```
 
-After running the bootstrap ru
+After running the bootstrap rule, the app will be running, but it won't
+live-reload. To run the typical dev scripts, stop the app and run the dev rule:
+
+```
+make dev
+```
+
+There are very few unit tests, but you can run them with:
+
+```
+cargo test
+```
+
+There are some utilities in the Makefile for working with the database. In
+particular:
+
+```
+make shell-db  # attach to an interactive PostgreSQL shell inside the DB
+make watch-db  # live-tail the data
