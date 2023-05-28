@@ -40,4 +40,16 @@ particular:
 
 ```
 make shell-db  # attach to an interactive PostgreSQL shell inside the DB
-make watch-db  # live-tail the data
+make watch-db  # live-tail the database logs
+```
+
+Additionally, there is a rule for running CI just like it runs in CI!
+
+```
+make check
+```
+
+You will notice that there is a pre-push hook in `./githooks` which calls this
+Make rule. I recommend running `git config --local core.hooksPath githooks` to
+setup githooks for your local repo, which will run the checks locally before you
+push, giving some faster feedback. This is only trul
