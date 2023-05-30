@@ -61,4 +61,9 @@ same checks for pull requests anyway.
 Of course, the application will happily converse with any PostgreSQL instance.
 You can easily direct the program to your PostgreSQL instance of your choosing
 by simply changing the `.env` file. Note that the `.env` file is created by
-copying `env-template` the first time you
+copying `env-template` the first time you run `make dev`. Naturally, it contains
+other handy config levers.
+
+Note that the application only uses `DATABASE_URL`. The rest of the `POSTGRES_*`
+environment variables are only used in the Makefile and passed to the PostgreSQL
+Docker container during startup.
