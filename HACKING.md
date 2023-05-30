@@ -52,4 +52,13 @@ make check
 You will notice that there is a pre-push hook in `./githooks` which calls this
 Make rule. I recommend running `git config --local core.hooksPath githooks` to
 setup githooks for your local repo, which will run the checks locally before you
-push, giving some faster feedback. This is only trul
+push, giving some faster feedback. This is only truly crucial if you're given
+permission to push directly to the main branch, though, since CI will run these
+same checks for pull requests anyway.
+
+# Other Database Options
+
+Of course, the application will happily converse with any PostgreSQL instance.
+You can easily direct the program to your PostgreSQL instance of your choosing
+by simply changing the `.env` file. Note that the `.env` file is created by
+copying `env-template` the first time you
