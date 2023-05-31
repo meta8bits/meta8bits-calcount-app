@@ -11,4 +11,15 @@
 DATABASE_URL=postgres://you:somepassword@localhost:5432/calcount
 SESSION_SECRET=superdupersecret
 
-# Note: these guys are only used to initialize th
+# Note: these guys are only used to initialize the PostgreSQL database
+# container with Docker
+POSTGRES_USER=you
+POSTGRES_USERNAME=you
+POSTGRES_HOST=localhost
+POSTGRES_PASSWORD=somepassword
+POSTGRES_DB=calcount
+OPENAI_API_KEY=<your api key goes here>
+STRIPE_API_KEY=<your api key goes here>
+STRIPE_WEBHOOK_SIGNING_SECRET=<your secret goes here>
+SMTP_EMAIL_USERNAME=<your secret goes here>
+SMTP_EMAIL_PASSWORD=<your secret goes here>
