@@ -3,4 +3,12 @@
 # directions in ./HACKING.md.
 # ============================================================================
 
-# Note: when running `make debug-contai
+# Note: when running `make debug-container`, change the hostname in the
+# database connection string from localhost:5432 to `host.docker.internal`
+# on macOS. On linux, passing the `--net=host` flag to Docker when we call
+# `docker run` inside the Makefile should allow this same database connection
+# host to work.
+DATABASE_URL=postgres://you:somepassword@localhost:5432/calcount
+SESSION_SECRET=superdupersecret
+
+# Note: these guys are only used to initialize th
