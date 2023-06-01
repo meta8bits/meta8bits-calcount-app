@@ -24,4 +24,32 @@ provider "kubernetes" {
 
 provider "helm" {
   kubernetes {
-    config_path = "~/.kub
+    config_path = "~/.kube/config"
+  }
+}
+
+variable "openai_api_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "stripe_api_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "smtp_email_password" {
+  type      = string
+  sensitive = true
+}
+
+resource "random_password" "secret_key" {
+  length  = 48
+  special = false
+}
+
+data "external" "git_describe" {
+  program = [
+    "sh",
+    "-c",
+    "echo '{\"output\": \"'\"$(if [[ ! -z $GITLAB_
