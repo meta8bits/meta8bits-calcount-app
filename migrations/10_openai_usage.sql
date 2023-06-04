@@ -6,4 +6,7 @@ create table openai_usage(
 );
 
 create table openai_usage_user(
-    usage_id int not null references openai_usa
+    usage_id int not null references openai_usage(id),
+    user_id int not null references users(id),
+    primary key (usage_id, user_id)
+);
