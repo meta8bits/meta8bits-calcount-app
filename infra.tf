@@ -66,4 +66,9 @@ module "basic-deployment" {
 
   extra_env = {
     SESSION_SECRET      = random_password.secret_key.result
-    OPENAI_API_KEY      = 
+    OPENAI_API_KEY      = var.openai_api_key
+    STRIPE_API_KEY      = var.stripe_api_key
+    SMTP_EMAIL_USERNAME = "jdevries3133@gmail.com"
+    SMTP_EMAIL_PASSWORD = var.smtp_email_password
+  }
+}
