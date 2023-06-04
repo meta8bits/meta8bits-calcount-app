@@ -52,4 +52,18 @@ data "external" "git_describe" {
   program = [
     "sh",
     "-c",
-    "echo '{\"output\": \"'\"$(if [[ ! -z $GITLAB_
+    "echo '{\"output\": \"'\"$(if [[ ! -z $GITLAB_SHA ]]; then echo $GITLAB_SHA; else git rev-parse HEAD; fi)\"'\"}'"
+  ]
+}
+
+module "basic-deployment" {
+  source  = "jdevries3133/basic-deployment/kubernetes"
+  version = "3.0.2"
+
+  app_name  = "calcount"
+  container = "jdevries3133/calcount:${data.external.git_describe.result.output}"
+  domain    = "beancount.bot"
+
+  extra_env = {
+    SESSION_SECRET      = random_password.secret_key.result
+    OPENAI_API_KEY      = 
