@@ -1,0 +1,8 @@
+{
+  "name": "calcount",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tailwindcss -i ./tailwind.css -o src/tailwind.generated.css --watch",
+    "build": 
