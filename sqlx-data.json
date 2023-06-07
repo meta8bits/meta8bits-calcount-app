@@ -15,4 +15,21 @@
         ]
       }
     },
-    "query": "insert into meal (user_id, name, calories, fat, protein, carbohydrates)\n     
+    "query": "insert into meal (user_id, name, calories, fat, protein, carbohydrates)\n        values ($1, $2, $3, $4, $5, $6)"
+  },
+  "0f113ec6a146b99b54a7940ae97aeb8b9b591eb95283f2a89e52f00718f3da45": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "meal_name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "calories",
+          "
