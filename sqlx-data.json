@@ -73,4 +73,7 @@
         ]
       }
     },
-    "query": "select\n            id
+    "query": "select\n            id,\n            name meal_name,\n            calories,\n            fat fat_grams,\n            protein protein_grams,\n            carbohydrates carbohydrates_grams,\n            created_at\n        from meal\n        where user_id = $1\n        order by created_at desc\n        limit $2\n        offset $3\n        "
+  },
+  "10879fbef28071f8f460559fdd9067e82990dc06f7936e7204504b02c2c2edb3": {
+   
