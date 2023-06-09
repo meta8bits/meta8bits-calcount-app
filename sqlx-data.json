@@ -99,4 +99,19 @@
         ]
       }
     },
-    "query": "select timezo
+    "query": "select timezone, caloric_intake_goal from user_preference\n        where user_id = $1"
+  },
+  "14eae1fe6a09754b945207ee31e8fd73449ff163d206739c0f52693c587f4262": {
+    "describe": {
+      "columns": [
+        {
+          "name": "created_at",
+          "ordinal": 0,
+          "type_info": "Timestamptz"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "L
