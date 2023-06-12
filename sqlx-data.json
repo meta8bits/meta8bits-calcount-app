@@ -170,4 +170,8 @@
         ]
       }
     },
-    "query": "select\n            name meal_name,\n            calori
+    "query": "select\n            name meal_name,\n            calories calories,\n            protein protein_grams,\n            fat fat_grams,\n            carbohydrates carbohydrates_grams,\n            created_at\n        from meal\n        where\n            user_id = $1\n            and date_trunc('day', created_at) >= CURRENT_DATE - INTERVAL '1 day'\n        "
+  },
+  "1ce1887e3a3c117342076091dca0a31fa54df8e774b60632c77b55e137e35684": {
+    "describe": {
+      "columns": 
