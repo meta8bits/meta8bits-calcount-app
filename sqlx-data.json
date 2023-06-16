@@ -211,4 +211,13 @@
         false,
         false,
         false,
-  
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "select\n                id,\n                username,\n                email,\n                stripe_customer_id,\n                subscription_type_id,\n                created_at\n            from users\n            where username = $1 or email = $1"
