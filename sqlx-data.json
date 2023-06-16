@@ -174,4 +174,23 @@
   },
   "1ce1887e3a3c117342076091dca0a31fa54df8e774b60632c77b55e137e35684": {
     "describe": {
-      "columns": 
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "username",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "email",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "stripe_customer_id",
+          "ordinal": 3,
+          "type
