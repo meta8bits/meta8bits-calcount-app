@@ -193,4 +193,22 @@
         {
           "name": "stripe_customer_id",
           "ordinal": 3,
-          "type
+          "type_info": "Varchar"
+        },
+        {
+          "name": "subscription_type_id",
+          "ordinal": 4,
+          "type_info": "Int4"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+  
