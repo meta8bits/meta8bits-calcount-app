@@ -236,4 +236,21 @@
     "query": "delete from meal where user_id = $1 and id = $2"
   },
   "375d5edd228b1196f0a4f39228eee4c127f1df6526f626dd143f5370ba8930ae": {
-    "describe": 
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Text"
+        ]
+      }
+    },
+    "query": "insert into password_reset_link (user_id, slug) values ($1, $2)"
+  },
+  "48cbf05416b7c8cb95589c62b2983aea6ed5f5b1071d094ed6788f36bd7d0150": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+    
