@@ -221,3 +221,19 @@
       }
     },
     "query": "select\n                id,\n                username,\n                email,\n                stripe_customer_id,\n                subscription_type_id,\n                created_at\n            from users\n            where username = $1 or email = $1"
+  },
+  "21d97a21e8486f639820b3b00f89ba477a5443acfc3493413cef15ecf4d51f07": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "delete from meal where user_id = $1 and id = $2"
+  },
+  "375d5edd228b1196f0a4f39228eee4c127f1df6526f626dd143f5370ba8930ae": {
+    "describe": 
