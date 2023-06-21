@@ -253,4 +253,22 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-    
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "delete from password_reset_link where user_id = $1"
+  },
+  "54d10572f4886df16a0d30c5ec06d7f5ddbd1ff52a4f7d8ef85a134242564937": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Bool"
+        ]
+      }
+    },
+    "query": "insert into aud
