@@ -271,4 +271,18 @@
         ]
       }
     },
-    "query": "insert into aud
+    "query": "insert into audit_stripe_webhooks (payload, includes_usable_update)\n        values ($1, $2)\n        "
+  },
+  "58f1f3b223bc3818b5657d17367e6f1fc6798db354d30f7cf90fd9e5e831684c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "delete from password_reset_link where slug = $1"
+  },
+  "661fb6e34f044a583bb59
