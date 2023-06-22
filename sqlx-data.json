@@ -285,4 +285,16 @@
     },
     "query": "delete from password_reset_link where slug = $1"
   },
-  "661fb6e34f044a583bb59
+  "661fb6e34f044a583bb59df6d66beb9c94639a7dffa73cbae0667b8dd510aace": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Text",
+          "Int4"
+        ]
+      }
+    },
+    "query": "insert into user_preference\n        (user_id, timezone, caloric_intake_goal) values ($1, $2, $3)\n        on conflict (user_id)\n        do update set timezone = $2, cal
