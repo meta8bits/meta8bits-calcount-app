@@ -297,4 +297,24 @@
         ]
       }
     },
-    "query": "insert into user_preference\n        (user_id, timezone, caloric_intake_goal) values ($1, $2, $3)\n        on conflict (user_id)\n        do update set timezone = $2, cal
+    "query": "insert into user_preference\n        (user_id, timezone, caloric_intake_goal) values ($1, $2, $3)\n        on conflict (user_id)\n        do update set timezone = $2, caloric_intake_goal = $3"
+  },
+  "68a469121ce660fafeb842413a14b4ec275bb6fcacdb10a939f5458329cf95a1": {
+    "describe": {
+      "columns": [
+        {
+          "name": "key",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "select key from registration_key"
+  },
+  "74
