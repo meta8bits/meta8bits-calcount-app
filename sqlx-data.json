@@ -317,4 +317,18 @@
     },
     "query": "select key from registration_key"
   },
-  "74
+  "74dc83227192193a2b06eee2816081297a6f6164781c498571992dde4bac706f": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "insert into wait_list values ($1) on conflict do nothing"
+  },
+  "7ac64c0826a89e9d73c97d59caa22ff90d2c0ecd23546188365ab71811dee1bc": {
+    "describe": {
+      "columns
