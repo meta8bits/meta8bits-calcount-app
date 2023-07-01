@@ -384,4 +384,22 @@
     "describe": {
       "columns": [],
       "nullable": [],
-      "parameters
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "insert into openai_usage_user (usage_id, user_id) values ($1, $2)"
+  },
+  "ba3452c8eb32bc14739ee17e1ed1c69a34bbd25a5c58bf6b90df09f232f5a0f8": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nulla
