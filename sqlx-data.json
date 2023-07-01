@@ -424,4 +424,19 @@
       ],
       "nullable": [
         false
-     
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "insert into openai_usage (prompt_tokens, completion_tokens, total_tokens)\n        values ($1, $2, $3)\n        returning id"
+  },
+  "bd5b2a741b1fefc53879270f9524e11572fc62070e2710a4da1b5a5c9355eff7": {
+    "describe": {
+      "columns": [
+        {
+          "name": "calo
