@@ -456,4 +456,26 @@
         {
           "name": "fat_grams",
           "ordinal": 3,
-          "type_info
+          "type_info": "Int4"
+        },
+        {
+          "name": "meal_name",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Le
