@@ -509,4 +509,12 @@
           "Varchar",
           "Varchar",
           "Varchar",
-          "Varch
+          "Varchar",
+          "Varchar",
+          "Int4"
+        ]
+      }
+    },
+    "query": "insert into users\n        (\n            username,\n            email,\n            salt,\n            digest,\n            stripe_customer_id,\n            subscription_type_id\n        )\n         values ($1, $2, $3, $4, $5, $6)\n        returning id, created_at"
+  },
+  "d316655f3cd158482e5f83c4e62246892091dbf55e74ca48bd7d892c1f3f
