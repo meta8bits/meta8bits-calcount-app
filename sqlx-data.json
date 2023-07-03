@@ -488,4 +488,25 @@
   },
   "cdbb235d9a742314eddf0faea2985c638d4267d559fc93e4e84ef3879d825458": {
     "describe": {
- 
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 1,
+          "type_info": "Timestamptz"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Varchar",
+          "Varchar",
+          "Varch
