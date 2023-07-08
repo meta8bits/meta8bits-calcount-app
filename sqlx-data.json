@@ -517,4 +517,20 @@
     },
     "query": "insert into users\n        (\n            username,\n            email,\n            salt,\n            digest,\n            stripe_customer_id,\n            subscription_type_id\n        )\n         values ($1, $2, $3, $4, $5, $6)\n        returning id, created_at"
   },
-  "d316655f3cd158482e5f83c4e62246892091dbf55e74ca48bd7d892c1f3f
+  "d316655f3cd158482e5f83c4e62246892091dbf55e74ca48bd7d892c1f3f1104": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Text"
+        ]
+      }
+    },
+    "query": "update users set subscription_type_id = $1\n        where stripe_customer_id = $2"
+  },
+  "e03e96472e0f78b53e31e86f7702dd80d455475d8c051c4e2284d42f1862403e": {
+    "describe": {
+      "columns": [
+      
