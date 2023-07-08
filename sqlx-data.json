@@ -533,4 +533,25 @@
   "e03e96472e0f78b53e31e86f7702dd80d455475d8c051c4e2284d42f1862403e": {
     "describe": {
       "columns": [
-      
+        {
+          "name": "salt",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "digest",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "SELECT salt, digest FROM users WHER
