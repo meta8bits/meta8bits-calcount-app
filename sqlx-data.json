@@ -570,4 +570,24 @@
     },
     "query": "insert into openai_usage (prompt_tokens, completion_tokens, total_tokens)\n        values ($1, $2, $3)"
   },
-  "ea7979eabc4809357b84ff50151b047d1869093d4f134968c929
+  "ea7979eabc4809357b84ff50151b047d1869093d4f134968c9295ba416c25492": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "slug",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "username",
+       
