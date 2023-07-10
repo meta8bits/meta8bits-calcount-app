@@ -590,4 +590,20 @@
         },
         {
           "name": "username",
-       
+          "ordinal": 3,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "select\n            r.user_id user_id,\n            r.slug slug,\n            r.created_at created_at,\n            u.u
