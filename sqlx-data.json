@@ -618,4 +618,22 @@
     },
     "query": "delete from registration_key where key = 'a-reddit-new-year'"
   },
-  "f246ed09abd9442ad50ee7d86684f51bb844626a2ef9
+  "f246ed09abd9442ad50ee7d86684f51bb844626a2ef9a2db102883617d33220f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "count",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "select 1 count from users"
+  }
+}
