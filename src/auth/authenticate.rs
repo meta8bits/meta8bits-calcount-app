@@ -16,4 +16,14 @@ use sqlx::{postgres::PgPool, query_as};
 /// email, or their email is someone else's username, then they could certainly
 /// get into a position where the `user` who is fetched by our database query
 /// here is the target victim's user, and not the attacker's user. However,
-/// the `tr
+/// the `truth` (the known password digest) is ultimately associated with the
+/// target victim's password. So, an attaker would need to know the target
+/// victim's password to be able to authenticate as that user.
+pub async fn authenticate(
+    db: &PgPool,
+    username_or_email: &str,
+    password: &str,
+) -> Result<Session> {
+    let user = models::User::get(
+        db,
+        &db_ops::Ge
