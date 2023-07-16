@@ -26,4 +26,12 @@ pub async fn authenticate(
 ) -> Result<Session> {
     let user = models::User::get(
         db,
-        &db_ops::Ge
+        &db_ops::GetUserQuery {
+            identifier: username_or_email,
+        },
+    )
+    .await?;
+    let preferences = get_user_preference(db, &user).await?.unwrap_or_default();
+    // This is kept out of the `User` model because I don't want to leak
+    // password digests in autnentication tokens. The entire User object is
+    // serialized into the user's session token, which is
