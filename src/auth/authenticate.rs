@@ -34,4 +34,21 @@ pub async fn authenticate(
     let preferences = get_user_preference(db, &user).await?.unwrap_or_default();
     // This is kept out of the `User` model because I don't want to leak
     // password digests in autnentication tokens. The entire User object is
-    // serialized into the user's session token, which is
+    // serialized into the user's session token, which is signed but not
+    // encrypted.
+    let truth = query_as!(
+        pw::HashedPw,
+        "SELECT salt, digest FROM users WHERE id = $1",
+        user.id
+    )
+    .fetch_one(db)
+    .await?;
+
+    if pw::check(password, &truth).is_ok() {
+        Ok(Session {
+            user,
+            preferences,
+            created_at: Utc::now(),
+        })
+    } else {
+        bail!("wro
