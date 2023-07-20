@@ -51,4 +51,6 @@ pub async fn authenticate(
             created_at: Utc::now(),
         })
     } else {
-        bail!("wro
+        bail!("wrong password")
+    }
+}
