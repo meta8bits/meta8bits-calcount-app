@@ -18,4 +18,14 @@ impl Component for LoginForm {
                     type="text"
                     id="identifier"
                     name="identifier"
-          
+                    autocomplete="username"
+                />
+                <label for="passwored">Password</label>
+                <input
+                    autocomplete="current-password"
+                    type="password"
+                    id="password"
+                    name="password"
+                    />
+                <div class="flex gap-2">
+                
