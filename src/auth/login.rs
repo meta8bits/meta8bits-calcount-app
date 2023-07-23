@@ -40,4 +40,16 @@ impl Component for LoginForm {
                     rounded
                     shadow
                     transition
-      
+                    w-36
+                ">
+                        Log In
+                    </button>
+                    <a href="{password_reset}">
+                        <button class="
+                            block
+                            bg-yellow-200
+                            hover:bg-yellow-300
+                            dark:bg-yellow-700
+                            dark:hover:bg-yellow-600
+                            dark:text-white
+ 
