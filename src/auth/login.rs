@@ -28,4 +28,16 @@ impl Component for LoginForm {
                     name="password"
                     />
                 <div class="flex gap-2">
-                
+                <button class="
+                    block
+                    bg-green-200
+                    hover:bg-green-300
+                    dark:bg-green-700
+                    dark:hover:bg-green-600
+                    dark:text-white
+                    hover:shadow-none
+                    p-1
+                    rounded
+                    shadow
+                    transition
+      
