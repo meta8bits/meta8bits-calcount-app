@@ -52,4 +52,16 @@ impl Component for LoginForm {
                             dark:bg-yellow-700
                             dark:hover:bg-yellow-600
                             dark:text-white
- 
+                            hover:shadow-none
+                            p-1
+                            rounded
+                            shadow
+                            transition
+                            w-36
+                        ">
+                            Reset Password
+                        </button>
+                    </a>
+                </div>
+            </form>
+           
