@@ -64,4 +64,22 @@ impl Component for LoginForm {
                     </a>
                 </div>
             </form>
-           
+            "#
+        )
+    }
+}
+
+pub async fn get_login_form(
+    headers: HeaderMap,
+) -> Result<impl IntoResponse, ServerError> {
+    let session = Session::from_headers(&headers);
+    let form = Page {
+        title: "Login",
+        children: &PageContainer {
+            children: &LoginForm {},
+        },
+    };
+    Ok(match session {
+        Some(session) => {
+            if Utc::now()
+      
