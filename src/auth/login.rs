@@ -82,4 +82,13 @@ pub async fn get_login_form(
     Ok(match session {
         Some(session) => {
             if Utc::now()
-      
+                .signed_duration_since(session.created_at)
+                .num_days()
+                < config::SESSION_EXPIRY_TIME_DAYS
+            {
+                // The user is already authenticated, let's redirect them to the
+                // user homepage.
+                let mut headers = HeaderMap::new();
+                headers.insert(
+                    "Location",
+                    HeaderValue::from_str(&Route::UserH
