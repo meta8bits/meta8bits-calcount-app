@@ -91,4 +91,20 @@ pub async fn get_login_form(
                 let mut headers = HeaderMap::new();
                 headers.insert(
                     "Location",
-                    HeaderValue::from_str(&Route::UserH
+                    HeaderValue::from_str(&Route::UserHome.as_string())?,
+                );
+                headers.insert(
+                    "Hx-Redirect",
+                    HeaderValue::from_str(&Route::UserHome.as_string())?,
+                );
+
+                (StatusCode::SEE_OTHER, headers).into_response()
+            } else {
+                form.render().into_response()
+            }
+        }
+        None => form.render().into_response(),
+    })
+}
+
+pub async fn log
