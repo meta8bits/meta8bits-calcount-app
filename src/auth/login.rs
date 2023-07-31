@@ -119,4 +119,17 @@ pub async fn logout() -> Result<impl IntoResponse, ServerError> {
     Ok((StatusCode::FOUND, headers))
 }
 
-#[derive(D
+#[derive(Debug, Deserialize)]
+pub struct LoginFormPayload {
+    /// Username or email
+    identifier: String,
+    password: String,
+}
+
+pub async fn handle_login(
+    State(AppState { db }): State<AppState>,
+    Form(form): Form<LoginFormPayload>,
+) -> Result<impl IntoResponse, ServerError> {
+    let session = authenticate(&db, &form.identifier, &form.password).await;
+    let headers = HeaderMap::new();
+    if l
