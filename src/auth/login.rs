@@ -132,4 +132,14 @@ pub async fn handle_login(
 ) -> Result<impl IntoResponse, ServerError> {
     let session = authenticate(&db, &form.identifier, &form.password).await;
     let headers = HeaderMap::new();
-    if l
+    if let Ok(session) = session {
+        let homepage = Route::UserHome.as_string();
+        let headers = session.update_headers(headers);
+        let headers = htmx::redirect(headers, &homepage);
+        Ok((headers, "OK".to_string()))
+    } else {
+        let login_route = Route::Login;
+        Ok((
+            headers,
+            format!(
+                r#"<p hx-trigger="load delay:1s" hx-
