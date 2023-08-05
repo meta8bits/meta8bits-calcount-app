@@ -142,4 +142,8 @@ pub async fn handle_login(
         Ok((
             headers,
             format!(
-                r#"<p hx-trigger="load delay:1s" hx-
+                r#"<p hx-trigger="load delay:1s" hx-get="{login_route}">Invalid login credentials.</p>"#
+            ),
+        ))
+    }
+}
