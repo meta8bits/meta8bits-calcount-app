@@ -19,4 +19,23 @@ pub struct HashedPw {
 
 fn hash(pw: &str, salt: &str) -> HashedPw {
     let mut pw_digest = salt.to_string();
-    pw_digest.
+    pw_digest.push_str(pw);
+
+    let mut hash = Sha256::new();
+    hash.update(&pw_digest);
+
+    let digest = hash.finalize().to_vec();
+    let b64_digest = general_purpose::STANDARD.encode(digest);
+
+    if b64_digest.len() > 255 {
+        panic!("password is too long");
+    }
+
+    HashedPw {
+        salt: salt.to_string(),
+        digest: b64_digest,
+    }
+}
+
+/// Hash a new password; random salt is generated.
+pub f
