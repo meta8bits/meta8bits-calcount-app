@@ -52,4 +52,29 @@ pub fn hash_new(pw: &str) -> HashedPw {
 ///
 /// This does not use a cryptographically secure string comparison, and may
 /// therefore be vulnerable to timing attack.
-pub fn check(pw: &str, truth: &Has
+pub fn check(pw: &str, truth: &HashedPw) -> Result<()> {
+    let user_input_digest = hash(pw, &truth.salt).digest;
+
+    if user_input_digest == truth.digest {
+        Ok(())
+    } else {
+        bail!("passwords do not match")
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_can_hash_new_pw() {
+        hash_new("heyoooo");
+    }
+
+    #[test]
+    fn test_can_check_old_pw() {
+        let hash = hash_new("heyoooo");
+        check("heyoooo", &hash).unwrap();
+    }
+
+    
