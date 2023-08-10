@@ -77,4 +77,9 @@ mod test {
         check("heyoooo", &hash).unwrap();
     }
 
-    
+    #[test]
+    fn test_utf8_support() {
+        let hash = hash_new("heyoooo 🥹");
+        check("heyoooo 🥹", &hash).unwrap();
+    }
+}
