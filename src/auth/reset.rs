@@ -22,4 +22,22 @@ impl Component for ResetRequestForm {
                 <input type="email" id="email" name="email" required />
                 <button class="self-start dark:bg-green-700 dark:hover:bg-green-600 bg-green-100 hover:bg-green-200 rounded p-1">
                     Submit
-                <
+                </button>
+            </form>
+            "#
+        )
+    }
+}
+
+struct ConfirmReset<'a> {
+    email: &'a str,
+}
+impl Component for ConfirmReset<'_> {
+    fn render(&self) -> String {
+        let email = clean(self.email);
+        let home = Route::Root;
+        format!(
+            r#"
+            <div>
+                <p>An password reset email was sent to {email} if an associated
+                user exists.</
