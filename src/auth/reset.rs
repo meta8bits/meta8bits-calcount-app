@@ -74,4 +74,14 @@ pub async fn handle_pw_reset_request(
         .fetch_optional(&db)
         .await?;
     if let Some(Qres { id }) = uid {
- 
+        // Invalidating old reset links before creating a new one feels like
+        // the right move, which is also why it's enforced by our schema.
+        query!("delete from password_reset_link where user_id = $1", id)
+            .execute(&db)
+            .await?;
+
+        let slug = uuid::Uuid::new_v4().to_string();
+        let link = Route::PasswordResetSecret(Some(slug.clone()));
+        send_email(
+            &email,
+            "Pas
