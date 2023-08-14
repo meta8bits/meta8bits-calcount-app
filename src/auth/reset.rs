@@ -59,4 +59,19 @@ pub async fn get_password_reset_request() -> String {
 }
 
 #[derive(Deserialize)]
-pub struct ResetPayload 
+pub struct ResetPayload {
+    email: String,
+}
+
+pub async fn handle_pw_reset_request(
+    State(AppState { db }): State<AppState>,
+    Form(ResetPayload { email }): Form<ResetPayload>,
+) -> Result<impl IntoResponse, ServerError> {
+    struct Qres {
+        id: i32,
+    }
+    let uid = query_as!(Qres, "select id from users where email = $1", email)
+        .fetch_optional(&db)
+        .await?;
+    if let Some(Qres { id }) = uid {
+ 
