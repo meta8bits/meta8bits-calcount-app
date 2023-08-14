@@ -40,4 +40,23 @@ impl Component for ConfirmReset<'_> {
             r#"
             <div>
                 <p>An password reset email was sent to {email} if an associated
-                user exists.</
+                user exists.</p>
+                <a class="link" href="{home}">Return to Home Page</a>
+            </div>
+            "#
+        )
+    }
+}
+
+pub async fn get_password_reset_request() -> String {
+    Page {
+        title: "Reset Password",
+        children: &PageContainer {
+            children: &ResetRequestForm {},
+        },
+    }
+    .render()
+}
+
+#[derive(Deserialize)]
+pub struct ResetPayload 
