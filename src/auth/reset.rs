@@ -84,4 +84,22 @@ pub async fn handle_pw_reset_request(
         let link = Route::PasswordResetSecret(Some(slug.clone()));
         send_email(
             &email,
-            "Pas
+            "Password Reset for beancount.bot",
+            &format!("Visit https://{DOMAIN}{link} to reset your password. This link will expire in 15 minutes."),
+        )
+        .await?;
+        query!(
+            "insert into password_reset_link (user_id, slug) values ($1, $2)",
+            id,
+            slug
+        )
+        .execute(&db)
+        .await?;
+    };
+    Ok(ConfirmReset { email: &email }.render())
+}
+
+struct ResetForm<'a> {
+    slug: &'a str,
+}
+impl Compone
