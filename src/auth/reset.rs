@@ -102,4 +102,12 @@ pub async fn handle_pw_reset_request(
 struct ResetForm<'a> {
     slug: &'a str,
 }
-impl Compone
+impl Component for ResetForm<'_> {
+    fn render(&self) -> String {
+        let slug = clean(self.slug);
+        let reset = Route::PasswordResetSecret(Some(slug.clone())).as_string();
+        format!(
+            r#"
+            <form hx-post="{reset}" class="flex flex-col gap-2 max-w-prose p-2 sm:p-4 md:p-8">
+                <h1 class="text-xl font-extrabold">Reset your Password</h1>
+                <label fo
