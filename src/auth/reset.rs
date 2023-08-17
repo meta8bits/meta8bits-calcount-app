@@ -121,4 +121,19 @@ impl Component for ResetForm<'_> {
                     rounded
                     p-1
                 ">
-                
+                    Save
+                </button>
+            </form>
+            "#
+        )
+    }
+}
+
+/// Provides the form for submitting a password reset request
+pub async fn get_password_reset_form(
+    Path(slug): Path<String>,
+) -> impl IntoResponse {
+    Page {
+        title: "Reset your Password",
+        children: &PageContainer {
+            children: &ResetForm { slug: &s
