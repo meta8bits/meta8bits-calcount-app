@@ -136,4 +136,26 @@ pub async fn get_password_reset_form(
     Page {
         title: "Reset your Password",
         children: &PageContainer {
-            children: &ResetForm { slug: &s
+            children: &ResetForm { slug: &slug },
+        },
+    }
+    .render()
+}
+
+struct ResetFailed;
+impl Component for ResetFailed {
+    fn render(&self) -> String {
+        let retry = Route::PasswordReset;
+        format!(
+            r#"
+            <p>
+                Could not reset password.
+                <a class="link" href="{retry}">Click here to try again.</a>
+            </p>
+            "#
+        )
+    }
+}
+
+#[derive(Deserialize)]
+pub struct N
