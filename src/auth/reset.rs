@@ -158,4 +158,17 @@ impl Component for ResetFailed {
 }
 
 #[derive(Deserialize)]
-pub struct N
+pub struct NewPassword {
+    password: String,
+}
+
+/// Handles POST to the secret URL, performing the password reset if the slug
+/// is valid.
+pub async fn handle_password_reset(
+    State(AppState { db }): State<AppState>,
+    Path(slug): Path<String>,
+    Form(NewPassword { password }): Form<NewPassword>,
+) -> Result<impl IntoResponse, ServerError> {
+    struct ResetToken {
+        user_id: i32,
+        userna
