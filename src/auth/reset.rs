@@ -184,4 +184,19 @@ pub async fn handle_password_reset(
             u.username username
             from password_reset_link r
         join users u on u.id = r.user_id
-        wh
+        where slug = $1",
+        slug
+    )
+    .fetch_optional(&db)
+    .await?;
+
+    // Now let's delete that token, as its one and only use is now consumed
+    query!("delete from password_reset_link where slug = $1", slug)
+        .execute(&db)
+        .await?;
+
+    let headers = HeaderMap::new();
+    match existing_token {
+        Some(tok) => {
+            if (Utc::now()
+                .signed_du
