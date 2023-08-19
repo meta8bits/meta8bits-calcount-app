@@ -171,4 +171,17 @@ pub async fn handle_password_reset(
 ) -> Result<impl IntoResponse, ServerError> {
     struct ResetToken {
         user_id: i32,
-        userna
+        username: String,
+        slug: String,
+        created_at: chrono::DateTime<Utc>,
+    }
+    let existing_token = query_as!(
+        ResetToken,
+        "select
+            r.user_id user_id,
+            r.slug slug,
+            r.created_at created_at,
+            u.username username
+            from password_reset_link r
+        join users u on u.id = r.user_id
+        wh
