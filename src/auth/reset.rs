@@ -199,4 +199,14 @@ pub async fn handle_password_reset(
     match existing_token {
         Some(tok) => {
             if (Utc::now()
-                .signed_du
+                .signed_duration_since(tok.created_at)
+                .num_minutes()
+                > RESET_TOKEN_TIMEOUT_MINUTES)
+                || (tok.slug != slug)
+            {
+                Ok((headers, ResetFailed {}.render()))
+            } else {
+                let pw = pw::hash_new(&password);
+                query!(
+                    "update users set salt = $1, digest = $2
+                    
