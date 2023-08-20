@@ -209,4 +209,14 @@ pub async fn handle_password_reset(
                 let pw = pw::hash_new(&password);
                 query!(
                     "update users set salt = $1, digest = $2
-                    
+                    where id = $3",
+                    pw.salt,
+                    pw.digest,
+                    tok.user_id
+                )
+                .execute(&db)
+                .await?;
+                let session =
+                    auth::authenticate(&db, &tok.username, &password).await?;
+                let homepage = Route::UserHome.as_string();
+                let headers = session.update_headers
