@@ -219,4 +219,11 @@ pub async fn handle_password_reset(
                 let session =
                     auth::authenticate(&db, &tok.username, &password).await?;
                 let homepage = Route::UserHome.as_string();
-                let headers = session.update_headers
+                let headers = session.update_headers(headers);
+                let headers = htmx::redirect(headers, &homepage);
+                Ok((headers, "OK".into()))
+            }
+        }
+        None => Ok((headers, ResetFailed {}.render())),
+    }
+}
