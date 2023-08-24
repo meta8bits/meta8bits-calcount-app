@@ -29,4 +29,12 @@ pub struct Session {
     pub created_at: DateTime<Utc>,
 }
 impl Session {
-    /// Parse the session from request headers, validating
+    /// Parse the session from request headers, validating the cookie
+    /// signature along the way. Returns the [None] variant if the session
+    /// header is missing or invalid.
+    pub fn from_headers(headers: &HeaderMap) -> Option<Self> {
+        let cookie = headers.get("Cookie")?;
+        let cookie = cookie.to_str().unwrap_or("");
+        let re = Regex::new(r"session=(.*)").unwrap();
+        let captures = re.captures(cookie)?;
+        let token = &captures[1];
