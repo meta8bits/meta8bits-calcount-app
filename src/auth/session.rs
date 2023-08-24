@@ -19,4 +19,14 @@ use serde::{Deserialize, Serialize};
 /// This struct does derive [Serialize] and [Deserialize]. Internally, these
 /// are used to serialize the struct into JSON. Then, the
 /// [Session::from_headers()] and [Session::update_headers()] methods perform
-/// some additonal ad-hoc serializa
+/// some additonal ad-hoc serialization and deserialization to grep the session
+/// string out of the Cookie string (where it is prefixed by `session=`), and
+/// also to convert to/from base64 encoding.
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Session {
+    pub user: User,
+    pub preferences: preferences::UserPreference,
+    pub created_at: DateTime<Utc>,
+}
+impl Session {
+    /// Parse the session from request headers, validating
