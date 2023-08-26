@@ -49,4 +49,13 @@ impl Session {
     /// `err_msg` should identify which handler the error is coming from. Simply
     /// the name of the handler function is typically the best thing to put
     /// here.
-    pub fn from_headers_err
+    pub fn from_headers_err(
+        headers: &HeaderMap,
+        err_msg: &'static str,
+    ) -> Result<Self, ServerError> {
+        Self::from_headers(headers)
+            .ok_or_else(|| ServerError::forbidden(err_msg))
+    }
+    /// Serialize the session into the provided [HeaderMap].
+    pub fn update_headers(&self, mut headers: HeaderMap) -> HeaderMap {
+        let session_string = self.serialize()
