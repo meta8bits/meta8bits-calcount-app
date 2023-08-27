@@ -70,4 +70,17 @@ impl Session {
             .with_timezone(&Tz::GMT)
             .format("%a, %d %b %Y %H:%M:%S %Z");
 
-        let header_value
+        let header_value = format!(
+            "session={session_string}; Path=/; HttpOnly; Expires={expiry_date}"
+        );
+        headers.insert(
+            "Set-Cookie",
+            HeaderValue::from_str(&header_value).expect(
+                "stringified session can be turned into a header value",
+            ),
+        );
+
+        headers
+    }
+    fn serialize(&self) -> String {
+        let json_byte
