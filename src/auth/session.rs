@@ -83,4 +83,13 @@ impl Session {
         headers
     }
     fn serialize(&self) -> String {
-        let json_byte
+        let json_bytes = serde_json::to_string(&self)
+            .expect("session can be JSON serialized");
+        let b64 = general_purpose::STANDARD_NO_PAD.encode(json_bytes);
+        let raw_digest = crypto::get_digest(&b64.clone().into_bytes());
+        let digest = general_purpose::STANDARD_NO_PAD.encode(raw_digest);
+        let session = format!("{}:{}", b64, digest);
+
+        session
+    }
+    fn deserialize(cookie: &str) -> Result<Self, 
