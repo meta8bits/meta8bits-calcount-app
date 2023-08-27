@@ -58,4 +58,16 @@ impl Session {
     }
     /// Serialize the session into the provided [HeaderMap].
     pub fn update_headers(&self, mut headers: HeaderMap) -> HeaderMap {
-        let session_string = self.serialize()
+        let session_string = self.serialize();
+        let expiry_date = self
+            .created_at
+            .checked_add_days(Days::new(
+                config::SESSION_EXPIRY_TIME_DAYS
+                    .try_into()
+                    .expect("7 can be a u64 too"),
+            ))
+            .expect("heat death of the universe has not happened yet")
+            .with_timezone(&Tz::GMT)
+            .format("%a, %d %b %Y %H:%M:%S %Z");
+
+        let header_value
