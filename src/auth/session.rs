@@ -92,4 +92,14 @@ impl Session {
 
         session
     }
-    fn deserialize(cookie: &str) -> Result<Self, 
+    fn deserialize(cookie: &str) -> Result<Self, &'static str> {
+        let parts: Vec<&str> = cookie.split(':').collect();
+        if parts.len() != 2 {
+            Err("Invalid session")
+        } else {
+            let b64_json: Vec<u8> = parts[0].into();
+            let digest: Vec<u8> =
+                match general_purpose::STANDARD_NO_PAD.decode(parts[1]) {
+                    Ok(v) => v,
+                    Err(_) => {
+         
