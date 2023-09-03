@@ -111,4 +111,21 @@ impl Session {
                     match general_purpose::STANDARD_NO_PAD.decode(b64_json) {
                         Ok(v) => v,
                         Err(_) => {
-                            return Err("Cannot base64 decode se
+                            return Err("Cannot base64 decode sesion string");
+                        }
+                    };
+
+                match serde_json::from_slice(&json_string) {
+                    Ok(v) => Ok(v),
+                    Err(_) => Err("Cannot deserialize session JSON"),
+                }
+            } else {
+                Err("Failed to validate session signature")
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*
