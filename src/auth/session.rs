@@ -102,4 +102,13 @@ impl Session {
                 match general_purpose::STANDARD_NO_PAD.decode(parts[1]) {
                     Ok(v) => v,
                     Err(_) => {
-         
+                        return Err("Cannot base64 decode the digest");
+                    }
+                };
+
+            if crypto::is_valid(&b64_json, &digest) {
+                let json_string =
+                    match general_purpose::STANDARD_NO_PAD.decode(b64_json) {
+                        Ok(v) => v,
+                        Err(_) => {
+                            return Err("Cannot base64 decode se
