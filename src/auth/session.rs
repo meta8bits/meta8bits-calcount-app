@@ -128,4 +128,17 @@ impl Session {
 
 #[cfg(test)]
 mod tests {
-    use super::*
+    use super::*;
+    use chrono::{DateTime, Utc};
+    use std::env;
+
+    fn get_session() -> Session {
+        Session {
+            user: User {
+                id: 1,
+                username: "Jack".to_string(),
+                email: "jack@jack.com".to_string(),
+                stripe_customer_id: "".to_string(),
+                stripe_subscription_type:
+                    crate::stripe::SubscriptionTypes::Free,
+                
