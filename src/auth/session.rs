@@ -141,4 +141,12 @@ mod tests {
                 stripe_customer_id: "".to_string(),
                 stripe_subscription_type:
                     crate::stripe::SubscriptionTypes::Free,
-                
+                created_at: DateTime::<Utc>::from_timestamp(0, 0)
+                    .expect("that is a valid timestamp"),
+            },
+            preferences: preferences::UserPreference {
+                timezone: chrono_tz::Tz::US__Samoa,
+                caloric_intake_goal: None,
+            },
+            created_at: DateTime::<Utc>::from_timestamp(0, 0)
+                .expect("that is a valid timest
