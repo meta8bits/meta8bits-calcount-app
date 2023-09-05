@@ -149,4 +149,8 @@ mod tests {
                 caloric_intake_goal: None,
             },
             created_at: DateTime::<Utc>::from_timestamp(0, 0)
-                .expect("that is a valid timest
+                .expect("that is a valid timestamp"),
+        }
+    }
+
+    const SERIALIZED_SESSION: &str = "eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6IkphY2siLCJlbWFpbCI6ImphY2tAamFjay5jb20iLCJjcmVhdGVkX2F0IjoiMTk3MC0wMS0wMVQwMDowMDowMFoiLCJzdHJpcGVfY3VzdG9tZXJfaWQiOiIiLCJzdHJpcGVfc3Vic2NyaXB0aW9uX3R5cGUiOiJGcmVlIn0sInByZWZlcmVuY2VzIjp7InRpbWV6b25lIjoiVVMvU2Ftb2EiLCJjYWxvcmljX2ludGFrZV9nb2FsIjpudWxsfSwiY3JlYXRlZF9hdCI6IjE5NzAtMDEtM
