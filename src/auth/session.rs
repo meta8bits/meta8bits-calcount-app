@@ -153,4 +153,17 @@ mod tests {
         }
     }
 
-    const SERIALIZED_SESSION: &str = "eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6IkphY2siLCJlbWFpbCI6ImphY2tAamFjay5jb20iLCJjcmVhdGVkX2F0IjoiMTk3MC0wMS0wMVQwMDowMDowMFoiLCJzdHJpcGVfY3VzdG9tZXJfaWQiOiIiLCJzdHJpcGVfc3Vic2NyaXB0aW9uX3R5cGUiOiJGcmVlIn0sInByZWZlcmVuY2VzIjp7InRpbWV6b25lIjoiVVMvU2Ftb2EiLCJjYWxvcmljX2ludGFrZV9nb2FsIjpudWxsfSwiY3JlYXRlZF9hdCI6IjE5NzAtMDEtM
+    const SERIALIZED_SESSION: &str = "eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6IkphY2siLCJlbWFpbCI6ImphY2tAamFjay5jb20iLCJjcmVhdGVkX2F0IjoiMTk3MC0wMS0wMVQwMDowMDowMFoiLCJzdHJpcGVfY3VzdG9tZXJfaWQiOiIiLCJzdHJpcGVfc3Vic2NyaXB0aW9uX3R5cGUiOiJGcmVlIn0sInByZWZlcmVuY2VzIjp7InRpbWV6b25lIjoiVVMvU2Ftb2EiLCJjYWxvcmljX2ludGFrZV9nb2FsIjpudWxsfSwiY3JlYXRlZF9hdCI6IjE5NzAtMDEtMDFUMDA6MDA6MDBaIn0:k85WWa60oKXRGXUlsreRMwLVz7qU0xOtor7025LMI9o";
+
+    #[test]
+    fn test_serialize_session() {
+        env::set_var("SESSION_SECRET", "foo");
+
+        let result = &get_session().serialize();
+        // little snapshot test
+        assert_eq!(result, SERIALIZED_SESSION);
+    }
+
+    #[test]
+    fn test_deserialize_session() {
+        env::set_var("SESSION_SECRET", "foo");
