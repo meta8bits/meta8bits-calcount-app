@@ -167,3 +167,10 @@ mod tests {
     #[test]
     fn test_deserialize_session() {
         env::set_var("SESSION_SECRET", "foo");
+
+        let result = Session::deserialize(&String::from(SERIALIZED_SESSION))
+            .expect("result");
+        // little snapshot test
+        assert_eq!(result.user.id, get_session().user.id);
+    }
+}
