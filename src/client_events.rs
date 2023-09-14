@@ -6,4 +6,5 @@ pub fn reload_macros(headers: HeaderMap) -> HeaderMap {
 }
 
 pub fn reload_meals(headers: HeaderMap) -> HeaderMap {
-    trigger_ev
+    trigger_event(headers, "reload-meals")
+}
