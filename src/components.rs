@@ -380,3 +380,122 @@ impl Component for UserHome<'_> {
         .render();
         let chat = count_chat::ChatContainer {
             meals: self.meals,
+            user_timezone: self.preferences.timezone,
+            prompt: None,
+            next_page: 1,
+            post_request_handler: Route::HandleChat,
+        }
+        .render();
+        format!(
+            r#"
+            <div class="flex flex-col gap-2">
+                {profile}
+                {macros}
+                {chat}
+            </div>
+            "#
+        )
+    }
+}
+
+struct ProfileChip<'a> {
+    username: &'a str,
+    timezone: &'a Tz,
+    user_created_time: DateTime<Utc>,
+    subscription_type: SubscriptionTypes,
+}
+impl Component for ProfileChip<'_> {
+    fn render(&self) -> String {
+        let username = clean(self.username);
+        let timezone = self.timezone;
+        let logout = Route::Logout;
+        let preferences = Route::UserPreference;
+        let trial_warning = if let SubscriptionTypes::FreeTrial(duration) =
+            self.subscription_type
+        {
+            let cnt_remaining_days = timeutils::as_days(
+                duration
+                    .checked_sub(
+                        Utc::now()
+                            .signed_duration_since(self.user_created_time)
+                            .to_std()
+                            .unwrap_or_default(),
+                    )
+                    .unwrap_or_default(),
+            );
+            format!(
+                r#"
+                <p
+                    class="text-black text-xs inline-block bg-yellow-100 p-1 rounded-lg my-2"
+                >
+                    <span class="font-semibold">{cnt_remaining_days}</span>
+                    free trial days remaining; price will be $5/mo
+                </p>
+                "#
+            )
+        } else {
+            "".into()
+        };
+        format!(
+            r#"
+            <div class="self-start p-2 bg-blue-100 dark:bg-blue-800 rounded-2xl">
+                <div class="flex mb-1 gap-2">
+                    <p class="font-bold">Hi, {username}!</p>
+                    <a class="inline" href="{logout}">
+                        <button
+                            style="margin-left: auto"
+                            class="text-xs p-1 bg-red-100 hover:bg-red-200
+                            rounded-full text-black"
+                        >
+                            Log Out
+                        </button>
+                    </a>
+                    <a class="inline" href="{preferences}">
+                        <button
+                            style="margin-left: auto"
+                            class="text-xs p-1 bg-green-100 hover:bg-green-200
+                            rounded-full text-black"
+                        >
+                            Goals & Preferences
+                        </button>
+                    </a>
+                </div>
+                <p class="text-xs inline-block">Timezone: {timezone}</p>
+                {trial_warning}
+            </div>
+            "#
+        )
+    }
+}
+
+pub struct Saved<'a> {
+    pub message: &'a str,
+}
+impl Component for Saved<'_> {
+    fn render(&self) -> String {
+        let void = Route::Void;
+        let message = clean(self.message);
+        format!(
+            r##"
+            <div
+                hx-get="{void}"
+                hx-trigger="load delay:2s"
+                class="my-2"
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline bg-green-800 p-2 rounded-full w-8 h-8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+                {message}
+                <script>
+                    setTimeout(() => {{
+                        const iconElement = document.querySelector("#sort-icon");
+                        iconElement.classList.remove('text-black');
+                        iconElement.classList.remove('bg-yellow-100');
+                        htmx.trigger('body', 'toggle-sort-toolbar');
+                    }}, 2000);
+                </script>
+            </div>
+            "##
+        )
+    }
+}
