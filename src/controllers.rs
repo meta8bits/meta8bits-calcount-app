@@ -92,3 +92,182 @@ pub async fn get_favicon() -> impl IntoResponse {
         HeaderValue::from_str("image/x-icon")
             .expect("We can insert image/x-icon header"),
     );
+    (headers, include_bytes!("./static/favicon.ico"))
+}
+
+fn png_controller(bytes: &'static [u8]) -> impl IntoResponse {
+    let mut headers = HeaderMap::new();
+    headers.insert(
+        "Content-Type",
+        HeaderValue::from_str("image/png")
+            .expect("We can insert image/png header"),
+    );
+    (headers, bytes)
+}
+
+pub async fn get_tiny_icon() -> impl IntoResponse {
+    png_controller(include_bytes!("./static/icon-16x16.png"))
+}
+
+pub async fn get_small_icon() -> impl IntoResponse {
+    png_controller(include_bytes!("./static/icon-32x32.png"))
+}
+
+pub async fn get_medium_icon() -> impl IntoResponse {
+    png_controller(include_bytes!("./static/icon-192x192.png"))
+}
+
+pub async fn get_large_icon() -> impl IntoResponse {
+    png_controller(include_bytes!("./static/icon-512x512.png"))
+}
+
+pub async fn get_apple_icon() -> impl IntoResponse {
+    png_controller(include_bytes!("./static/apple-touch-icon.png"))
+}
+
+pub async fn get_manifest() -> impl IntoResponse {
+    let mut headers = HeaderMap::new();
+    headers.insert(
+        "Content-Type",
+        HeaderValue::from_str("application/manifest+json")
+            .expect("We can insert application/manifest+json header"),
+    );
+    (headers, include_str!("./static/manifest.json"))
+}
+
+pub async fn user_home(
+    State(AppState { db }): State<AppState>,
+    headers: HeaderMap,
+) -> Result<impl IntoResponse, ServerError> {
+    let Session {
+        user, preferences, ..
+    } = Session::from_headers_err(&headers, "user home")?;
+    let (macros, meals, sub_type) = join![
+        metrics::get_macros(&db, &user, &preferences),
+        count_chat::list_meals_op(&db, user.id, 0),
+        stripe::get_subscription_type(&db, user.id)
+    ];
+    let macros = macros?;
+    let meals = meals?;
+    let sub_type = sub_type?;
+    let html = components::Page {
+        title: "Home Page",
+        children: &components::PageContainer {
+            children: &components::UserHome {
+                user: &user,
+                meals: &meals,
+                macros: &macros,
+                preferences,
+                subscription_type: sub_type,
+                caloric_intake_goal: preferences.caloric_intake_goal,
+            },
+        },
+    }
+    .render();
+
+    Ok(html)
+}
+
+pub async fn delete_meal(
+    State(AppState { db }): State<AppState>,
+    headers: HeaderMap,
+    Path(id): Path<i32>,
+) -> Result<impl IntoResponse, ServerError> {
+    let session = Session::from_headers(&headers)
+        .ok_or_else(|| ServerError::forbidden("delete meal"))?;
+    struct Qres {
+        created_at: DateTime<Utc>,
+    }
+    let Qres { created_at } = query_as!(
+        Qres,
+        "select created_at from meal where user_id = $1 and id = $2",
+        session.user.id,
+        id
+    )
+    .fetch_one(&db)
+    .await?;
+    query!(
+        "delete from meal where user_id = $1 and id = $2",
+        session.user.id,
+        id
+    )
+    .execute(&db)
+    .await?;
+    if !chrono_utils::is_before_today(&created_at, session.preferences.timezone)
+    {
+        Ok(
+            (client_events::reload_macros(HeaderMap::new()), "")
+                .into_response(),
+        )
+    } else {
+        Ok("".into_response())
+    }
+}
+
+pub async fn add_meal_to_today(
+    State(AppState { db }): State<AppState>,
+    headers: HeaderMap,
+    Path(id): Path<i32>,
+) -> Result<impl IntoResponse, ServerError> {
+    let session = Session::from_headers_err(&headers, "add meal to today")?;
+    let existing_meal = query_as!(
+        count_chat::MealInfo,
+        "select
+            calories,
+            protein protein_grams,
+            carbohydrates carbohydrates_grams,
+            fat fat_grams,
+            name meal_name,
+            created_at
+        from meal
+        where id = $1 and user_id = $2",
+        id,
+        session.user.id
+    )
+    .fetch_one(&db)
+    .await?;
+    query!(
+        "insert into meal (calories, protein, carbohydrates, fat, name, user_id)
+        values ($1, $2, $3, $4, $5, $6)",
+        existing_meal.calories,
+        existing_meal.protein_grams,
+        existing_meal.carbohydrates_grams,
+        existing_meal.fat_grams,
+        existing_meal.meal_name,
+        session.user.id
+    )
+    .execute(&db)
+    .await?;
+
+    let headers = client_events::reload_meals(HeaderMap::new());
+    let headers = client_events::reload_macros(headers);
+    Ok((headers, ""))
+}
+
+pub async fn void() -> &'static str {
+    ""
+}
+
+#[derive(Deserialize)]
+pub struct WaitListPayload {
+    email: String,
+}
+
+pub async fn wait_list(
+    State(AppState { db }): State<AppState>,
+    Form(WaitListPayload { email }): Form<WaitListPayload>,
+) -> Result<impl IntoResponse, ServerError> {
+    if !email.is_empty() {
+        query!(
+            "insert into wait_list values ($1) on conflict do nothing",
+            email
+        )
+        .execute(&db)
+        .await?;
+    };
+    Ok(r#"
+        <p class="text-center text-slate-200">
+            Email received; we will let you know when there is news to share!
+        </p>
+       "#)
+}
