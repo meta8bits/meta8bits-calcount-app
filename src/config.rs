@@ -5,4 +5,14 @@ use std::time::Duration;
 pub const SESSION_EXPIRY_TIME_DAYS: i64 = 7;
 
 /// Password reset links will expire after 15 minutes.
-pub const
+pub const RESET_TOKEN_TIMEOUT_MINUTES: i64 = 15;
+
+/// Base URL of this website which is going to be wrong for local development,
+/// but that's OK.
+pub const DOMAIN: &str = "beancount.bot";
+
+/// Messages which exceed this length limit will not be forwarded to OpenAI,
+/// and will instead provide the user with an error message.
+pub const CHAT_MAX_LEN: usize = 200;
+
+/// We advertise a 30-day free 
