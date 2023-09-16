@@ -621,3 +621,75 @@ pub async fn list_meals_op<'a>(
         offset $3
         ",
         user_id,
+        limit,
+        offset
+    )
+    .fetch_all(db)
+    .await?;
+
+    Ok(res
+        .drain(..)
+        .map(|r| Meal {
+            id: r.id,
+            info: MealInfo {
+                meal_name: r.meal_name,
+                calories: r.calories,
+                carbohydrates_grams: r.carbohydrates_grams,
+                fat_grams: r.fat_grams,
+                protein_grams: r.protein_grams,
+                created_at: r.created_at,
+            },
+        })
+        .collect::<Vec<Meal>>())
+}
+
+pub async fn handle_save_meal(
+    State(AppState { db }): State<AppState>,
+    headers: HeaderMap,
+    Form(meal): Form<MealInfo>,
+) -> Result<impl IntoResponse, ServerError> {
+    let session = Session::from_headers(&headers)
+        .ok_or_else(|| ServerError::forbidden("handle save meal"))?;
+    query!(
+        "insert into meal (user_id, name, calories, fat, protein, carbohydrates)
+        values ($1, $2, $3, $4, $5, $6)",
+        session.user.id,
+        meal.meal_name,
+        meal.calories,
+        meal.fat_grams,
+        meal.protein_grams,
+        meal.carbohydrates_grams
+    )
+    .execute(&db)
+    .await?;
+    let response_headers = client_events::reload_macros(HeaderMap::new());
+    let meals = list_meals_op(&db, session.user.id, 0).await?;
+    Ok((
+        response_headers,
+        Chat {
+            meals: &meals,
+            user_timezone: session.preferences.timezone,
+            prompt: None,
+            next_page: 1,
+            post_request_handler: Route::HandleChat,
+        }
+        .render(),
+    ))
+}
+
+pub async fn list_meals(
+    State(AppState { db }): State<AppState>,
+    headers: HeaderMap,
+    Query(Pagination { page }): Query<Pagination>,
+) -> Result<impl IntoResponse, ServerError> {
+    let session = Session::from_headers_err(&headers, "list meals")?;
+    let meals = list_meals_op(&db, session.user.id, page).await?;
+
+    Ok(MealSet {
+        meals: &meals[..],
+        next_page: page + 1,
+        user_timezone: session.preferences.timezone,
+        show_ai_warning: false,
+    }
+    .render())
+}
