@@ -56,4 +56,16 @@ pub struct RetryPayload {
     meal_name: String,
 }
 
-pub async fn handle_retry(Fo
+pub async fn handle_retry(Form(form): Form<RetryPayload>) -> impl IntoResponse {
+    ChatDemo {
+        prefill_prompt: Some(&form.meal_name),
+    }
+    .render()
+}
+
+pub async fn handle_chat(
+    State(AppState { db }): State<AppState>,
+    Form(counter::ChatPayload { chat }): Form<counter::ChatPayload>,
+) -> Result<impl IntoResponse, ServerError> {
+    if chat.len() > config::CHAT_MAX_LEN {
+        retur
