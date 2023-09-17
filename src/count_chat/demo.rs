@@ -25,4 +25,15 @@ impl Component for ChatDemo<'_> {
     fn render(&self) -> String {
         let options = [
             "5 second squeeze of honey",
-         
+            "hummus on brioche bread",
+            "gigantic cheese burger",
+            "half a dunkin boston cream",
+            "3 handfuls of chex mix",
+            "a greasy cheese burger",
+            "a frozen chicken cutlet",
+            "really big diner breakfast (traditional American)",
+            "caesar salad & 10 stolen fries",
+        ];
+        let i = random::<usize>() % options.len();
+        counter::ChatUI {
+    
