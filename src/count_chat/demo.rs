@@ -36,4 +36,24 @@ impl Component for ChatDemo<'_> {
         ];
         let i = random::<usize>() % options.len();
         counter::ChatUI {
-    
+            post_request_handler: &Route::ChatDemo,
+            prefill_prompt: self.prefill_prompt.or(Some(options[i])),
+            children: None,
+        }
+        .render()
+    }
+}
+
+pub async fn get_demo_ui() -> impl IntoResponse {
+    ChatDemo {
+        prefill_prompt: None,
+    }
+    .render()
+}
+
+#[derive(Deserialize)]
+pub struct RetryPayload {
+    meal_name: String,
+}
+
+pub async fn handle_retry(Fo
