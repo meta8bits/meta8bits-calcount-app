@@ -79,4 +79,12 @@ pub async fn handle_chat(
         response.usage.prompt_tokens,
         response.usage.completion_tokens,
         response.usage.total_tokens
-    ).execute(&db).
+    ).execute(&db).await?;
+    let parse_result = counter::MealInfo::parse(&response.message, &chat);
+    match parse_result {
+        llm_parse_response::ParserResult::Ok(meal) => Ok(counter::MealCard {
+            info: &meal,
+            meal_id: None,
+            actions: Some(&DemoMealOptions {}),
+            // We don't know where the user is, but it also doesn't really
+            // matter. We jus
