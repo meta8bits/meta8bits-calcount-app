@@ -68,4 +68,15 @@ pub async fn handle_chat(
     Form(counter::ChatPayload { chat }): Form<counter::ChatPayload>,
 ) -> Result<impl IntoResponse, ServerError> {
     if chat.len() > config::CHAT_MAX_LEN {
-        retur
+        return Ok(counter::InputTooLong {}.render());
+    };
+    let response = openai::OpenAI::from_env()?
+        .send_message(counter::SYSTEM_MSG.into(), &chat)
+        .await?;
+    query!(
+        "insert into openai_usage (prompt_tokens, completion_tokens, total_tokens)
+        values ($1, $2, $3)",
+        response.usage.prompt_tokens,
+        response.usage.completion_tokens,
+        response.usage.total_tokens
+    ).execute(&db).
