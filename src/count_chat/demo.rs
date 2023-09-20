@@ -92,4 +92,13 @@ pub async fn handle_chat(
             // creation time is basically "now" so as long as we choose a
             // timezone with a very negative offset, the timezone-aware
             // date comparison will end up determining that the meal created
-            // "now" UTC is not yesterday 
+            // "now" UTC is not yesterday or before. If anything, the meal
+            // might end up being in the future from the users' real
+            // perspective, but again for this specific use-case
+            // that is OK.
+            user_timezone: Tz::US__Samoa,
+            show_ai_warning: true,
+        }
+        .render()),
+        llm_parse_response::ParserResult::FollowUp(msg) => {
+            let msg = clean(&msg.
