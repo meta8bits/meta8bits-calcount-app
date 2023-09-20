@@ -101,3 +101,163 @@ fn handle_capture<'a>(
                         }
                         _ => Err(format!(
                             "Could not parse the range of {describe_to_llm} ({}-{}) as a number.\n",
+                            s.as_str(),
+                            e.as_str())
+                        ),
+                    }
+                }
+                (Some(s), None) => {
+                    let value = s.as_str().parse::<i32>();
+                    match value {
+                        Ok(v) => Ok(v),
+                        _ => Err(format!(
+                            "Could not parse the string describing {describe_to_llm} ({}) as a number.\n",
+                            s.as_str()))
+                    }
+                }
+                _ => {
+                    Err(format!("Could not find a count of {describe_to_llm} in that response.\n"))
+                }
+            }
+        }
+        None => Err(format!(
+            "Could not find a count of {describe_to_llm} in that response.\n"
+        )),
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_parse_meal_info() {
+        let result = MealInfo::parse(
+            "100-200 calories, 10g of fat, 11g of protein, 12g of carbs",
+            "name",
+        );
+        match result {
+            ParserResult::Ok(meal) => {
+                assert_eq!(meal.calories, 150);
+                assert_eq!(meal.fat_grams, 10);
+                assert_eq!(meal.protein_grams, 11);
+                assert_eq!(meal.carbohydrates_grams, 12);
+            }
+            ParserResult::FollowUp(err) => {
+                print!("{}", err.parsing_error);
+                panic!("We should be able to parse this input");
+            }
+        }
+    }
+
+    #[test]
+    fn test_other_filler_words() {
+        let result = MealInfo::parse(
+            "100-200 calories, 10g in fat, 11g in total protein, 12g of total carbs",
+            "name",
+        );
+        match result {
+            ParserResult::Ok(meal) => {
+                assert_eq!(meal.calories, 150);
+                assert_eq!(meal.fat_grams, 10);
+                assert_eq!(meal.protein_grams, 11);
+                assert_eq!(meal.carbohydrates_grams, 12);
+            }
+            ParserResult::FollowUp(err) => {
+                print!("{}", err.parsing_error);
+                panic!("We should be able to parse this input");
+            }
+        }
+    }
+
+    #[test]
+    fn test_missing_calories() {
+        let result = MealInfo::parse(
+            "100 calgories, 10g of fat, 11g of protein, 12g of carbs",
+            "name",
+        );
+        if let ParserResult::FollowUp(err) = result {
+            assert_eq!(
+                err.parsing_error,
+                "Could not find a count of calories in that response.\n"
+            );
+        } else {
+            panic!("expected an error");
+        }
+    }
+
+    #[test]
+    fn test_missing_unit() {
+        let result = MealInfo::parse(
+            "100 calories, 10 of fat, 11g of protein, 12g of carbs",
+            "name",
+        );
+        if let ParserResult::FollowUp(err) = result {
+            assert_eq!(
+                err.parsing_error,
+                "Could not find a count of fat (in grams) in that response.\n"
+            );
+        } else {
+            panic!("expected an error");
+        }
+    }
+
+    #[test]
+    fn test_missing_fat() {
+        let result = MealInfo::parse(
+            "100 calories, 11g of protein, 12g of carbs",
+            "name",
+        );
+        if let ParserResult::FollowUp(err) = result {
+            assert_eq!(
+                err.parsing_error,
+                "Could not find a count of fat (in grams) in that response.\n"
+            );
+        } else {
+            panic!("expected an error");
+        }
+    }
+
+    #[test]
+    fn test_missing_two_properties() {
+        let result = MealInfo::parse("100 calories, 12g of carbs", "name");
+        if let ParserResult::FollowUp(err) = result {
+            assert_eq!(err.parsing_error, "Could not find a count of protein (in grams) in that response.\nCould not find a count of fat (in grams) in that response.\n");
+        } else {
+            panic!("expected an error");
+        }
+    }
+
+    #[test]
+    fn test_verbose_carbs() {
+        let result = MealInfo::parse(
+            "100 calories, 12g of fat, 13g of protein, 14g of carbohydrates",
+            "name",
+        );
+        if let ParserResult::Ok(res) = result {
+            assert_eq!(res.carbohydrates_grams, 14);
+        } else {
+            panic!("expected an OK result");
+        }
+    }
+
+    #[test]
+    fn real_world_ex_1() {
+        let result = MealInfo::parse(
+            "Chex Mix usually contains around 120 calories, 2 grams of protein, 15 grams of carbohydrates, and 6 grams of fat per 1/2 cup serving.",
+            "name",
+        );
+        match result {
+            ParserResult::Ok(meal) => {
+                assert_eq!(meal.calories, 120);
+                assert_eq!(meal.fat_grams, 6);
+                assert_eq!(meal.protein_grams, 2);
+                assert_eq!(meal.carbohydrates_grams, 15);
+            }
+            ParserResult::FollowUp(err) => {
+                print!("{}", err.parsing_error);
+                panic!("We should be able to parse this input");
+            }
+        }
+    }
+}
