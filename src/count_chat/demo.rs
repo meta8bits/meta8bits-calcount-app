@@ -101,4 +101,14 @@ pub async fn handle_chat(
         }
         .render()),
         llm_parse_response::ParserResult::FollowUp(msg) => {
-            let msg = clean(&msg.
+            let msg = clean(&msg.parsing_error);
+            Ok(counter::CannotParse {
+                parser_msg: &msg,
+                llm_response: &response.message,
+                original_user_prompt: &chat,
+                retry_route: Route::ChatDemoRetry,
+            }
+            .render())
+        }
+    }
+}
