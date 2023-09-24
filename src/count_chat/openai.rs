@@ -37,4 +37,27 @@ struct ChatCompletionResponse {
 #[derive(Deserialize)]
 pub struct Usage {
     pub prompt_tokens: i32,
-    pub completio
+    pub completion_tokens: i32,
+    pub total_tokens: i32,
+}
+
+#[derive(Deserialize)]
+struct ChatCompletionResponseMessage {
+    message: ChatCompletionResponseMessageContent,
+}
+
+#[derive(Deserialize)]
+struct ChatCompletionResponseMessageContent {
+    content: Option<String>,
+}
+
+pub struct Response {
+    pub message: String,
+    pub usage: Usage,
+}
+
+impl OpenAI {
+    pub fn from_env() -> Result<Self> {
+        let api_key = env::var("OPENAI_API_KEY")?;
+        Ok(Self {
+            
