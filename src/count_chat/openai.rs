@@ -60,4 +60,16 @@ impl OpenAI {
     pub fn from_env() -> Result<Self> {
         let api_key = env::var("OPENAI_API_KEY")?;
         Ok(Self {
-            
+            client: Client::new(),
+            api_key,
+        })
+    }
+    pub async fn send_message(
+        &self,
+        system_msg: String,
+        meal_description: &str,
+    ) -> Result<Response> {
+        if meal_description.len() > config::CHAT_MAX_LEN {
+            return Err(Error::msg("tried to send a chat which is too long"));
+        };
+        let mut user_message =
