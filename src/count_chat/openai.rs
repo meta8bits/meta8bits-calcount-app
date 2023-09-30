@@ -83,4 +83,16 @@ impl OpenAI {
                     content: system_msg,
                 },
                 ChatCompletionMessage {
+                    role: MessageRole::user,
+                    content: user_message,
+                },
+            ],
+        };
+        let req = self
+            .client
+            .post("https://api.openai.com/v1/chat/completions");
+        let req =
+            req.header("Authorization", format!("Bearer {}", self.api_key));
+        let req = req.json(&payload);
+        let res = req.send().await?;
         
