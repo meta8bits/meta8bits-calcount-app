@@ -73,3 +73,14 @@ impl OpenAI {
             return Err(Error::msg("tried to send a chat which is too long"));
         };
         let mut user_message =
+            String::from("The meal I'd like a calorie estimate for is ");
+        user_message.push_str(meal_description);
+        let payload = ChatCompletionRequest {
+            model: "gpt-3.5-turbo-1106".into(),
+            messages: vec![
+                ChatCompletionMessage {
+                    role: MessageRole::system,
+                    content: system_msg,
+                },
+                ChatCompletionMessage {
+        
