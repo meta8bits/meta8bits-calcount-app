@@ -15,4 +15,15 @@ pub async fn create_pg_pool() -> Result<sqlx::Pool<sqlx::Postgres>> {
 
     Ok(PgPoolOptions::new()
         // Postgres default max connections is 100, and we'll take 'em
-        // https://www.postgres
+        // https://www.postgresql.org/docs/current/runtime-config-connection.html
+        .max_connections(80)
+        .connect(db_url)
+        .await?)
+}
+
+#[async_trait]
+pub trait DbModel<GetQuery, ListQuery>: Sync + Send {
+    /// Get exactly one object from the database, matching the query. WIll
+    /// return an error variant if the item does not exist.
+    async fn get(db: &PgPool, query: &GetQuery) -> Result<Self>
+   
