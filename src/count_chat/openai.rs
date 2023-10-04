@@ -95,4 +95,12 @@ impl OpenAI {
             req.header("Authorization", format!("Bearer {}", self.api_key));
         let req = req.json(&payload);
         let res = req.send().await?;
-        
+        let text = res.text().await?;
+        let mut res: ChatCompletionResponse = serde_json::from_str(&text)?;
+
+        Ok(Response {
+            message: res.choices[0].message.content.take().unwrap_or("".into()),
+            usage: res.usage,
+        })
+    }
+}
