@@ -36,4 +36,12 @@ pub trait DbModel<GetQuery, ListQuery>: Sync + Send {
     /// Persist the object to the database
     async fn save(&self, db: &PgPool) -> Result<()>;
     /// Delete the record from the databse, which could of course cascade
-  
+    /// to related rows based on the rules in the database schema for this
+    /// table.
+    ///
+    /// Delete will consume `self`.
+    ///
+    /// Most `.save` methods are implemented using update queries, under the
+    /// assumption that the object already exists and we are just mutating it
+    /// and then calling `.save` to persist the mutation. Deletion, then,
+    /// would naturally invalidate these save quer
