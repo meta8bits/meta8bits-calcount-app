@@ -26,4 +26,14 @@ pub trait DbModel<GetQuery, ListQuery>: Sync + Send {
     /// Get exactly one object from the database, matching the query. WIll
     /// return an error variant if the item does not exist.
     async fn get(db: &PgPool, query: &GetQuery) -> Result<Self>
-   
+    where
+        Self: Sized;
+    /// Get a set of objects from the database, matching the contents of the
+    /// list query type.
+    async fn list(db: &PgPool, query: &ListQuery) -> Result<Vec<Self>>
+    where
+        Self: Sized;
+    /// Persist the object to the database
+    async fn save(&self, db: &PgPool) -> Result<()>;
+    /// Delete the record from the databse, which could of course cascade
+  
