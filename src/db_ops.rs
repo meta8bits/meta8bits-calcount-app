@@ -65,4 +65,18 @@ impl DbModel<GetUserQuery<'_>, ()> for models::User {
         struct Qres {
             id: i32,
             username: String,
-  
+            email: String,
+            stripe_customer_id: String,
+            subscription_type_id: i32,
+            created_at: DateTime<Utc>,
+        }
+        Ok(query_as!(
+            Qres,
+            "select
+                id,
+                username,
+                email,
+                stripe_customer_id,
+                subscription_type_id,
+                created_at
+    
