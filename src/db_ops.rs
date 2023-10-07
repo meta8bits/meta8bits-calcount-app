@@ -44,4 +44,11 @@ pub trait DbModel<GetQuery, ListQuery>: Sync + Send {
     /// Most `.save` methods are implemented using update queries, under the
     /// assumption that the object already exists and we are just mutating it
     /// and then calling `.save` to persist the mutation. Deletion, then,
-    /// would naturally invalidate these save quer
+    /// would naturally invalidate these save queries.
+    ///
+    /// Additionally, a delete operation can trigger cascading deletion,
+    /// so the existing record will often change structurally after deletion,
+    /// because other rows around it will be deleted as well. The strategy
+    /// for recovering from deletion will vary based on the object type,
+    /// which is why the delete method consumes `self`.
+    async fn delete(self, _db: &PgPool
