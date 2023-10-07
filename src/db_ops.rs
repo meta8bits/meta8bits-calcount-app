@@ -51,4 +51,18 @@ pub trait DbModel<GetQuery, ListQuery>: Sync + Send {
     /// because other rows around it will be deleted as well. The strategy
     /// for recovering from deletion will vary based on the object type,
     /// which is why the delete method consumes `self`.
-    async fn delete(self, _db: &PgPool
+    async fn delete(self, _db: &PgPool) -> Result<()>;
+}
+
+pub struct GetUserQuery<'a> {
+    /// `identifier` can be a users username _or_ email
+    pub identifier: &'a str,
+}
+
+#[async_trait]
+impl DbModel<GetUserQuery<'_>, ()> for models::User {
+    async fn get(db: &PgPool, query: &GetUserQuery) -> Result<Self> {
+        struct Qres {
+            id: i32,
+            username: String,
+  
