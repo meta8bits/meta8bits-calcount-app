@@ -79,4 +79,15 @@ impl DbModel<GetUserQuery<'_>, ()> for models::User {
                 stripe_customer_id,
                 subscription_type_id,
                 created_at
-    
+            from users
+            where username = $1 or email = $1",
+            query.identifier
+        )
+        .try_map(|row| {
+            Ok(Self {
+                stripe_subscription_type: stripe::SubscriptionTypes::from_int(
+                    row.subscription_type_id,
+                ),
+                id: row.id,
+                username: row.username,
+                em
