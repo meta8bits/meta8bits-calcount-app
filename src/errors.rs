@@ -19,4 +19,14 @@ pub struct ServerError {
     /// Public-facing response message
     response_body: String,
 }
-impl IntoResponse for Ser
+impl IntoResponse for ServerError {
+    fn into_response(self) -> Response {
+        println!("HTTP {} {:?}", self.status, self.err);
+        (self.status, self.response_body).into_response()
+    }
+}
+impl ServerError {
+    /// This can be used for things like bad requests or 404 errors, where
+    /// nothing is really "wrong," it's just the expected beahvior of the
+    /// API.
+    pub fn forbidden(msg: &'st
