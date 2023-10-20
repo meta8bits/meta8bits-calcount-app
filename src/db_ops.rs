@@ -90,4 +90,18 @@ impl DbModel<GetUserQuery<'_>, ()> for models::User {
                 ),
                 id: row.id,
                 username: row.username,
-                em
+                email: row.email,
+                stripe_customer_id: row.stripe_customer_id,
+                created_at: row.created_at,
+            })
+        })
+        .fetch_one(db)
+        .await?)
+    }
+    async fn list(_db: &PgPool, _query: &()) -> Result<Vec<Self>> {
+        todo!()
+    }
+    async fn save(&self, _db: &PgPool) -> Result<()> {
+        todo!()
+    }
+    async fn delete(self, _
