@@ -104,4 +104,7 @@ impl DbModel<GetUserQuery<'_>, ()> for models::User {
     async fn save(&self, _db: &PgPool) -> Result<()> {
         todo!()
     }
-    async fn delete(self, _
+    async fn delete(self, _db: &PgPool) -> Result<()> {
+        todo!();
+    }
+}
