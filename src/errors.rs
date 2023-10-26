@@ -40,4 +40,19 @@ impl ServerError {
         ServerError {
             err: Some(Error::msg("method is not allowed")),
             status: StatusCode::METHOD_NOT_ALLOWED,
-            response_body: "Method is
+            response_body: "Method is not allowed".into(),
+        }
+    }
+    pub fn bad_request(
+        msg: &'static str,
+        response_body: Option<String>,
+    ) -> Self {
+        ServerError {
+            err: Some(Error::msg(msg)),
+            status: StatusCode::METHOD_NOT_ALLOWED,
+            response_body: response_body.unwrap_or("bad request".into()),
+        }
+    }
+}
+
+/// This enables using `?` on functions
