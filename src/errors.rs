@@ -55,4 +55,18 @@ impl ServerError {
     }
 }
 
-/// This enables using `?` on functions
+/// This enables using `?` on functions that return `Result<_, anyhow::Error>`
+/// to turn them into `Result<_, AppError>`. That way you don't need to do that
+/// manually.
+impl<E> From<E> for ServerError
+where
+    E: Into<anyhow::Error>,
+{
+    fn from(err: E) -> Self {
+        Self {
+            err: Some(err.into()),
+            status: StatusCode::INTERNAL_SERVER_ERROR,
+            response_body: "something went wrong".into(),
+        }
+    }
+}
