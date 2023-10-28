@@ -13,4 +13,10 @@ impl Component for PrivacyPolicy {
                 be shared with a 3rd party under and circumstances, which
                 includes our email list as well as meal data you've entered
                 into the app.
-            <
+            </p>
+            <p>
+                Reach out to <a href="mailto:jdevries3133@gmail.com">jdevries3133@gmail.com</a>
+                for data management concerns, including requesting deletion of
+                your Bean Count account or requesting an export of your Bean
+                Count data. Export or total deletion will be completed within
+                2-4 weeks
