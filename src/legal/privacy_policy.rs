@@ -19,4 +19,19 @@ impl Component for PrivacyPolicy {
                 for data management concerns, including requesting deletion of
                 your Bean Count account or requesting an export of your Bean
                 Count data. Export or total deletion will be completed within
-                2-4 weeks
+                2-4 weeks.
+            </p>
+        </div>
+        "#.into()
+    }
+}
+
+pub async fn get_privacy_policy() -> impl IntoResponse {
+    Page {
+        title: "Privacy Policy",
+        children: &PageContainer {
+            children: &PrivacyPolicy {},
+        },
+    }
+    .render()
+}
