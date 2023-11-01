@@ -90,3 +90,14 @@ pub async fn auth<B>(request: Request<B>, next: Next<B>) -> Response {
                 .into_response()
         }
     } else {
+        (response_headers(), Redirect::to(&Route::Login.to_string()))
+            .into_response()
+    }
+}
+
+pub async fn log<B>(request: Request<B>, next: Next<B>) -> Response {
+    let uri = request.uri().path();
+    let method = request.method().as_str();
+    println!("{method} {uri} (anonymous)");
+    next.run(request).await
+}
