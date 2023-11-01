@@ -95,3 +95,30 @@ impl Component for Tos {
               without notice, for any reason, including but not limited to a
               breach of these terms.
             </p>
+
+            <h2>10. Changes to Terms</h2>
+            <p>
+              Bean Count reserves the right to modify or update these terms of
+              service at any time. Users will be notified of significant
+              changes, and continued use of the services after such modifications
+              constitutes acceptance of the updated terms.
+            </p>
+
+            <p>
+              By using the calorie counter services provided by
+              Bean Count, you agree to abide by these terms of
+              service. If you have any questions or concerns, please contact us at
+              <a href="mailto:jdevries3133@gmail.com">jdevries3133@gmail.com</a>.
+            </p>
+        </div>
+        "#.into()
+    }
+}
+
+pub async fn get_tos() -> impl IntoResponse {
+    Page {
+        title: "Terms of Service",
+        children: &PageContainer { children: &Tos {} },
+    }
+    .render()
+}
