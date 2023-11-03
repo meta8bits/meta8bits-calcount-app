@@ -29,4 +29,15 @@ impl Component for UserPreference {
         let goal = self
             .caloric_intake_goal
             .map_or("".to_string(), |g| g.to_string());
-        let options = TZ_VARIANTS.iter().fold(String::
+        let options = TZ_VARIANTS.iter().fold(String::new(), |mut acc, tz_choice| {
+            let selected = if *tz_choice == tz {
+                "selected"
+            } else {
+                ""
+            };
+            acc.push_str(&format!(r#"<option {selected} value="{tz_choice}">{tz_choice}</option>\n"#));
+            acc
+        });
+        let self_url = Route::UserPreference;
+        let home = Route::UserHome;
+        format!(
