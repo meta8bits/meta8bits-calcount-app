@@ -41,3 +41,12 @@ impl Component for UserPreference {
         let self_url = Route::UserPreference;
         let home = Route::UserHome;
         format!(
+            r#"
+            <div class="flex flex-col items-center justify-center max-w-prose">
+                <form
+                    hx-post="{self_url}"
+                    class="p-4 bg-slate-200 text-black rounded w-prose flex
+                    flex-col gap-2"
+                >
+                    <h1 class="text-2xl font-extrabold">User Preferences</h1>
+                    <label for=
