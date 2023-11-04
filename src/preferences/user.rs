@@ -49,4 +49,12 @@ impl Component for UserPreference {
                     flex-col gap-2"
                 >
                     <h1 class="text-2xl font-extrabold">User Preferences</h1>
-                    <label for=
+                    <label for="timezone">Timezone</label>
+                    <select
+                        id="timezone"
+                        name="timezone"
+                    >{options}</select>
+                    <label for="caloric_intake_goal">Caloric Intake Goal</label>
+                    <p class="text-sm">
+                        This should be based on your Total Daily Energy
+                        Expenditure (TDEE), and y
