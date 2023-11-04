@@ -66,4 +66,14 @@ impl Component for UserPreference {
                     <input
                         type="number"
                         step="100"
-                        value
+                        value="{goal}"
+                        name="caloric_intake_goal"
+                        id="caloric_intake_goal"
+                    />
+                    <button class="bg-blue-200 rounded">Save</button>
+                    <a
+                        class="text-center rounded border-slate-800 border-2"
+                        href="{home}"
+                    >Go back</a>
+                </form>
+           
