@@ -57,4 +57,13 @@ impl Component for UserPreference {
                     <label for="caloric_intake_goal">Caloric Intake Goal</label>
                     <p class="text-sm">
                         This should be based on your Total Daily Energy
-                        Expenditure (TDEE), and y
+                        Expenditure (TDEE), and your goals for weight loss,
+                        maintainance, or gain. Use an online resource like
+                        <a class="link" href="https://tdeecalculator.net/">the
+                        TDEE calculator</a> to calculate the perfect calorie
+                        goal for you.
+                    </p>
+                    <input
+                        type="number"
+                        step="100"
+                        value
