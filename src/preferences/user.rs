@@ -76,4 +76,25 @@ impl Component for UserPreference {
                         href="{home}"
                     >Go back</a>
                 </form>
-           
+            </div>
+            "#
+        )
+    }
+}
+
+struct SavedPreference {
+    preferences: UserPreference,
+}
+impl Component for SavedPreference {
+    fn render(&self) -> String {
+        let saved = Saved {
+            message: "User preferences saved",
+        }
+        .render();
+        let form = self.preferences.render();
+        format!(
+            r#"
+            {saved}
+            {form}
+            "#
+    
