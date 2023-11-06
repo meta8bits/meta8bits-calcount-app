@@ -97,4 +97,25 @@ impl Component for SavedPreference {
             {saved}
             {form}
             "#
-    
+        )
+    }
+}
+
+pub async fn get_user_preference(
+    db: &PgPool,
+    user: &User,
+) -> Aresult<Option<UserPreference>> {
+    struct Qres {
+        timezone: String,
+        caloric_intake_goal: Option<i32>,
+    }
+    let pref = query_as!(
+        Qres,
+        "select timezone, caloric_intake_goal from user_preference
+        where user_id = $1",
+        user.id
+    )
+    .fetch_optional(db)
+    .await?;
+    match pref {
+        
