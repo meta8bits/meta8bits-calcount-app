@@ -118,4 +118,20 @@ pub async fn get_user_preference(
     .fetch_optional(db)
     .await?;
     match pref {
-        
+        Some(pref) => Ok(Some(UserPreference {
+            timezone: pref.timezone.parse().map_err(|_| {
+                Error::msg(
+                    "could not parse timezone returned from the database",
+                )
+            })?,
+            caloric_intake_goal: pref.caloric_intake_goal,
+        })),
+        None => Ok(None),
+    }
+}
+
+pub async fn save_user_preference(
+    db: &PgPool,
+    user: &User,
+    preference: &UserPreference,
+) -> Ares
