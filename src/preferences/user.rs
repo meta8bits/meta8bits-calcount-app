@@ -164,4 +164,17 @@ pub async fn user_preference_controller(
 ) -> Result<impl IntoResponse, ServerError> {
     let session = Session::from_headers_err(&headers, "user preferences")?;
     let response_headers = HeaderMap::new();
+    match method {
+        Method::GET => {
+            let preferences = get_user_preference(&db, &session.user)
+                .await?
+                .unwrap_or_default();
+
+            Ok((
+                response_headers,
+                Page {
+                    title: "User Preferences",
+                    children: &PageContainer {
+                        children: &preferences,
+                    },
   
