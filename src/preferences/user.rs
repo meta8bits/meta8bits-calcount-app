@@ -134,4 +134,21 @@ pub async fn save_user_preference(
     db: &PgPool,
     user: &User,
     preference: &UserPreference,
-) -> Ares
+) -> Aresult<()> {
+    query!(
+        "insert into user_preference
+        (user_id, timezone, caloric_intake_goal) values ($1, $2, $3)
+        on conflict (user_id)
+        do update set timezone = $2, caloric_intake_goal = $3",
+        user.id,
+        preference.timezone.to_string(),
+        preference.caloric_intake_goal
+    )
+    .execute(db)
+    .await?;
+
+    Ok(())
+}
+
+#[derive(Deserialize)]
+pub struct Us
