@@ -151,4 +151,17 @@ pub async fn save_user_preference(
 }
 
 #[derive(Deserialize)]
-pub struct Us
+pub struct UserPreferencePayload {
+    pub timezone: Tz,
+    pub caloric_intake_goal: String,
+}
+
+pub async fn user_preference_controller(
+    State(AppState { db }): State<AppState>,
+    method: Method,
+    headers: HeaderMap,
+    preferences: Option<Form<UserPreferencePayload>>,
+) -> Result<impl IntoResponse, ServerError> {
+    let session = Session::from_headers_err(&headers, "user preferences")?;
+    let response_headers = HeaderMap::new();
+  
