@@ -189,4 +189,12 @@ pub async fn user_preference_controller(
                         caloric_intake_goal: if pref
                             .caloric_intake_goal
                             .is_empty()
-              
+                        {
+                            None
+                        } else {
+                            let goal_int = pref.caloric_intake_goal
+                                .parse()
+                                .map_err(|_| {
+                                    let msg = "caloric intake cannot be parsed into a number";
+                                    ServerError::bad_request(
+                                       
