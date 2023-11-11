@@ -177,4 +177,16 @@ pub async fn user_preference_controller(
                     children: &PageContainer {
                         children: &preferences,
                     },
-  
+                }
+                .render(),
+            ))
+        }
+        Method::POST => {
+            match preferences {
+                Some(pref) => {
+                    let pref = UserPreference {
+                        timezone: pref.timezone,
+                        caloric_intake_goal: if pref
+                            .caloric_intake_goal
+                            .is_empty()
+              
