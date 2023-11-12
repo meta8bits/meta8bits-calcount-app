@@ -197,4 +197,13 @@ pub async fn user_preference_controller(
                                 .map_err(|_| {
                                     let msg = "caloric intake cannot be parsed into a number";
                                     ServerError::bad_request(
-                                       
+                                        msg,
+                                        Some(msg.to_string())
+                                    )
+                                })?;
+                            Some(goal_int)
+                        },
+                    };
+                    save_user_preference(&db, &session.user, &pref).await?;
+                    let new_session = Session {
+                    
