@@ -206,4 +206,10 @@ pub async fn user_preference_controller(
                     };
                     save_user_preference(&db, &session.user, &pref).await?;
                     let new_session = Session {
-                    
+                        // We will inherit the `created_at` timestamp from the
+                        // current session, as to avoid implicitly re-logging-in
+                        // the user, and allowing users to extend sessions by
+                        // updating user preferences!
+                        created_at: session.created_at,
+                        user: session.user,
+                        preferences: pref
