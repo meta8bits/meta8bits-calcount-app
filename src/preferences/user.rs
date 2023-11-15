@@ -222,4 +222,11 @@ pub async fn user_preference_controller(
                     ))
                 }
                 None => Err(ServerError::bad_request(
-                    "form data is mis
+                    "form data is missing",
+                    Some("form data is missing".into()),
+                )),
+            }
+        }
+        _ => Err(ServerError::method_not_allowed()),
+    }
+}
