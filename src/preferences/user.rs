@@ -212,4 +212,14 @@ pub async fn user_preference_controller(
                         // updating user preferences!
                         created_at: session.created_at,
                         user: session.user,
-                        preferences: pref
+                        preferences: pref,
+                    };
+                    let response_headers =
+                        new_session.update_headers(response_headers);
+                    Ok((
+                        response_headers,
+                        SavedPreference { preferences: pref }.render(),
+                    ))
+                }
+                None => Err(ServerError::bad_request(
+                    "form data is mis
