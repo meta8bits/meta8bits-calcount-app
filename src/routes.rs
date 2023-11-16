@@ -208,3 +208,25 @@ pub fn get_public_routes() -> Router<models::AppState> {
             get(controllers::get_large_icon),
         )
         .route(
+            &Route::StaticAppleIcon.as_string(),
+            get(controllers::get_apple_icon),
+        )
+        .route(
+            &Route::StaticManifest.as_string(),
+            get(controllers::get_manifest),
+        )
+        .route(
+            &Route::ChatDemo.as_string(),
+            post(count_chat::handle_demo_chat),
+        )
+        .route(&Route::ChatDemo.as_string(), get(count_chat::get_demo_ui))
+        .route(
+            &Route::ChatDemoRetry.as_string(),
+            post(count_chat::handle_retry),
+        )
+        .route(
+            &Route::PrivacyPolicy.as_string(),
+            get(legal::get_privacy_policy),
+        )
+        .route(&Route::TermsOfService.as_string(), get(legal::get_tos))
+}
