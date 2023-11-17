@@ -18,4 +18,18 @@ pub async fn send_email(to: &str, subject: &str, msg: &str) -> Result<()> {
         .body(String::from(msg))?;
 
     let username = env::var("SMTP_EMAIL_USERNAME")?;
-    le
+    let password = env::var("SMTP_EMAIL_PASSWORD")?;
+
+    let creds = Credentials::new(username, password);
+
+    let mailer = AsyncSmtpTransport::<Tokio1Executor>::relay("smtp.gmail.com")
+        .unwrap()
+        .credentials(creds)
+        .build();
+
+    mailer.send(email).await?;
+    Ok(())
+}
+
+#[cfg(not(feature = "enable_smtp_email"))]
+pub async fn send_email(to: &str, subject: &
