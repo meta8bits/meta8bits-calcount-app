@@ -69,3 +69,273 @@ impl SubscriptionTypes {
         }
     }
 }
+
+// Next, I have the duration, and I have the get_subscription_type method, which
+// allows me to get the user's duration. Subscription type does require an
+// additional DB query for rendering the home page, but I think I can join! it
+// with other queries since it is only dependent on user_id, so I will not
+// separate this new UI element out into a separate API call.
+
+// Steps to complete should be just:
+
+// 1. add this query to the user home page controller
+// 2. plumb the subscription type down to the ProfileChip
+// 3. render the days remaining in the ProfileChip
+
+/// This is my own simple and sane data-model for a stripe webhook event.
+struct StripeUpdate {
+    stripe_customer_id: String,
+    subscription_type: SubscriptionTypes,
+}
+
+#[derive(Deserialize, Serialize)]
+struct BillingPortalSession {
+    id: String,
+}
+
+/// Returns the stripe customer ID
+pub async fn create_customer(name: &str, email: &str) -> Aresult<String> {
+    let url = "https://api.stripe.com/v1/customers";
+    let secret_key = get_b64_encoded_token_from_env()?;
+    let params = [("name", name), ("email", email)];
+
+    let client = Client::new();
+    let builder = client
+        .post(url)
+        .header("Authorization", format!("Basic {}:", secret_key));
+    let builder = builder.form(&params);
+    let response: BillingPortalSession = builder.send().await?.json().await?;
+    Ok(response.id)
+}
+
+#[derive(Serialize)]
+struct BillingPortalRequest {
+    customer: String,
+    return_url: String,
+    configuration: String,
+}
+
+#[cfg(feature = "stripe")]
+#[derive(Deserialize)]
+struct BillingPortalResponse {
+    url: String,
+}
+
+#[cfg(feature = "stripe")]
+/// Returns the URL for the billing session, to which the customer can be
+/// redirected.
+pub async fn get_billing_portal_url(
+    stripe_customer_id: &str,
+) -> Aresult<String> {
+    let url = "https://api.stripe.com/v1/billing_portal/sessions";
+    let secret_key = get_b64_encoded_token_from_env()?;
+    let return_url = "https://beancount.bot/home";
+    let request_payload = BillingPortalRequest {
+        customer: stripe_customer_id.to_string(),
+        return_url: return_url.to_string(),
+        configuration: BILLING_PORTAL_CONFIGURATION_ID.to_string(),
+    };
+    let client = Client::new();
+    let response = client
+        .post(url)
+        .header("Authorization", format!("Basic {}", secret_key))
+        .form(&request_payload)
+        .send()
+        .await?;
+    if response.status().is_success() {
+        Ok(response.json::<BillingPortalResponse>().await?.url)
+    } else {
+        Err(Error::msg("request to create registration session failed"))
+    }
+}
+
+#[cfg(not(feature = "stripe"))]
+pub async fn get_billing_portal_url(_customer_id: &str) -> Aresult<String> {
+    Ok(Route::UserHome.as_string())
+}
+
+fn get_b64_encoded_token_from_env() -> Aresult<String> {
+    let secret_key = env::var("STRIPE_API_KEY")?;
+    Ok(general_purpose::STANDARD_NO_PAD.encode(secret_key))
+}
+
+#[derive(Deserialize)]
+struct StripeSubscriptionUpdate {
+    data: StripeWrapper,
+}
+
+#[derive(Deserialize)]
+struct StripeWrapper {
+    object: InnerSubscriptionUpdated,
+}
+
+#[derive(Deserialize)]
+struct InnerSubscriptionUpdated {
+    customer: String,
+    status: SubscriptionStatus,
+    items: StripeWrapperAgain,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "snake_case")]
+enum SubscriptionStatus {
+    Incomplete,
+    IncompleteExpired,
+    Trialing,
+    Active,
+    PastDue,
+    Canceled,
+    Unpaid,
+}
+
+#[derive(Deserialize)]
+struct StripeWrapperAgain {
+    data: Vec<SubscriptionUpdateItems>,
+}
+
+#[derive(Deserialize)]
+struct SubscriptionUpdateItems {
+    price: SubscriptionPrice,
+}
+
+#[derive(Deserialize)]
+struct SubscriptionPrice {
+    id: String,
+}
+
+fn parse_update(stripe_garbage: &str) -> Option<StripeUpdate> {
+    let data: Value = serde_json::from_str(stripe_garbage).ok()?;
+    let r#type = data.get("type")?.as_str()?;
+
+    if !r#type.starts_with("customer.subscription") {
+        None
+    } else {
+        let subscription: StripeSubscriptionUpdate =
+            serde_json::from_str(stripe_garbage).ok()?;
+        let is_relevant = subscription
+            .data
+            .object
+            .items
+            .data
+            .iter()
+            .any(|i| i.price.id == BASIC_PLAN_STRIPE_ID);
+        if is_relevant {
+            let sub_ty = match subscription.data.object.status {
+                SubscriptionStatus::Active => SubscriptionTypes::Basic,
+                SubscriptionStatus::Unpaid
+                | SubscriptionStatus::PastDue
+                | SubscriptionStatus::Canceled
+                | SubscriptionStatus::Incomplete
+                | SubscriptionStatus::IncompleteExpired => {
+                    SubscriptionTypes::Unsubscribed
+                }
+                SubscriptionStatus::Trialing => {
+                    SubscriptionTypes::FreeTrial(config::FREE_TRIAL_DURATION)
+                }
+            };
+            Some(StripeUpdate {
+                stripe_customer_id: subscription.data.object.customer,
+                subscription_type: sub_ty,
+            })
+        } else {
+            None
+        }
+    }
+}
+
+pub async fn handle_stripe_webhook(
+    State(AppState { db }): State<AppState>,
+    headers: HeaderMap,
+    body: String,
+) -> Result<impl IntoResponse, ServerError> {
+    let signature = headers
+        .get("Stripe-Signature")
+        .ok_or(Error::msg("signature is missing"))?
+        .to_str()?;
+    authenticate_stripe(signature, &body)?;
+    let parsed_update = parse_update(&body);
+    query!(
+        "insert into audit_stripe_webhooks (payload, includes_usable_update)
+        values ($1, $2)
+        ",
+        body,
+        parsed_update.is_some()
+    )
+    .execute(&db)
+    .await?;
+    if let Some(update) = parsed_update {
+        persist_update_op(&db, &update).await?;
+    };
+    Ok("")
+}
+
+fn authenticate_stripe(
+    signature_header: &str,
+    message_body: &str,
+) -> Aresult<()> {
+    let parts = signature_header.split(',');
+    let mut entries = HashMap::new();
+    for part in parts {
+        let mut iter = part.split('=');
+        let key = iter.next().unwrap_or_default();
+        let value = iter.next().unwrap_or_default();
+        entries.insert(key, value);
+    }
+    let timestamp =
+        *entries.get("t").ok_or(Error::msg("timestamp is missing"))?;
+    let timestamp_dt = timestamp.parse::<i64>()?;
+    let now = Utc::now().timestamp();
+    let time_diff = if (timestamp_dt - now).is_negative() {
+        now - timestamp_dt
+    } else {
+        timestamp_dt - now
+    };
+    let is_too_old = time_diff > 60;
+    let external_digest =
+        *entries.get("v1").ok_or(Error::msg("digest is missing"))?;
+    let external_digest = external_digest.as_bytes();
+    let payload_str = format!("{}.{}", timestamp, message_body);
+    let payload = payload_str.as_bytes();
+    let signing_secret = env::var("STRIPE_WEBHOOK_SIGNING_SECRET")?;
+    let mut mac = Hmac::<Sha256>::new_from_slice(signing_secret.as_bytes())?;
+    mac.update(payload);
+    let sig = hex::decode(external_digest)?;
+    mac.verify_slice(sig.as_slice())?;
+    if !is_too_old {
+        Ok(())
+    } else {
+        Err(Error::msg("signature does not match"))
+    }
+}
+
+async fn persist_update_op(db: &PgPool, update: &StripeUpdate) -> Aresult<()> {
+    query!(
+        "update users set subscription_type_id = $1
+        where stripe_customer_id = $2",
+        update.subscription_type.as_int(),
+        update.stripe_customer_id
+    )
+    .execute(db)
+    .await?;
+    Ok(())
+}
+
+pub async fn get_subscription_type(
+    db: &PgPool,
+    user_id: i32,
+) -> Aresult<SubscriptionTypes> {
+    struct Qres {
+        subscription_type_id: i32,
+    }
+    let Qres {
+        subscription_type_id,
+    } = query_as!(
+        Qres,
+        "select subscription_type_id from users where id = $1",
+        user_id
+    )
+    .fetch_one(db)
+    .await?;
+
+    Ok(SubscriptionTypes::from_int(subscription_type_id))
+}
