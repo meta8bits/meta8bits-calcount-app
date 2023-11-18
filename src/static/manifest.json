@@ -1,0 +1,13 @@
+{
+  "name": "Bean Count",
+  "short_name": "Bean Count",
+  "icons": [
+    {
+      "src": "/static/xxs-icon",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/xs-icon",
+      "sizes": "32x32",
+      "type": "ima
